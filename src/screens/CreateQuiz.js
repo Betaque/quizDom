@@ -5,6 +5,8 @@ import AddQuestionModal from '../components/AddQuestionModal'
 import QuestionsTable from '../components/QuestionsTable'
 import { Switch } from '@material-ui/core'
 import LoadingScreen from './LoadingScreen'
+console.log('ej')
+console.log(process.env)
 
 const CreateQuiz = ({
 	user,
@@ -47,7 +49,8 @@ const CreateQuiz = ({
 		console.log('Quiz Creation Starts...')
 		setLoading('start')
 		try {
-			const result = await fetch('/API/quizzes/create', {
+			console.log(process.env.BACKEND_HOST)
+			const result = await fetch(`http://localhost:8000/API/quizzes/create`, {
 				method: 'POST',
 				body: JSON.stringify({
 					title,
@@ -60,10 +63,12 @@ const CreateQuiz = ({
 				}
 			})
 			console.log('Quiz posted ! ')
+			console.log(result)
 			const body = await result.json()
 			console.log('Quiz Code : ', body.quizId)
 			setQuizCode(body.quizId)
 		} catch (e) {
+			console.dir(e)
 			console.log('Quiz creation error : ', e)
 			setLoading('error')
 		}

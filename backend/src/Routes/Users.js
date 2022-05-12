@@ -5,6 +5,7 @@ const DB = require('./DB')
 
 // Create User in DB
 Router.post('/create', (req, res) => {
+	console.log("entered")
 	const { uid, name, email } = req.body
 	if (!uid) return res.status(500).json({ error: 'Incomplete Parameters' })
 

@@ -53,7 +53,9 @@ Router.post('/submit', (req, res) => {
 
 // Create Quiz
 Router.post('/create', (req, res) => {
+	console.log("Entered")
 	const quiz = req.body
+	console.log(quiz)
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
 
 	quiz.questions.forEach((question, i) => {

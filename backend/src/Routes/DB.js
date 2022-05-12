@@ -1,5 +1,4 @@
-// const MongoClient = require('mongodb')
-const mongoose = require('mongoose')
+const MongoClient = require('mongodb')
 const Evaluate = require('../Algorithms/EvaluateQuiz')
 const ObjectId = require('mongodb').ObjectId
 const API_KEY = require('../db-config').database
@@ -7,26 +6,18 @@ let db
 
 const DB = 'mongodb+srv://verma0018:qwerty%4018@cluster0.sdcnj.mongodb.net/quizDom?retryWrites=true&w=majority'
 
-mongoose.connect(DB, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true
-}).then(() =>{
-	console.log("Connection Successfull")
-}).catch((err) =>{
-	console.log("Erroorr!!!",err)
-})
+const DBStart = async () => {
+	console.log('DB server connecting...')
+	const client = await MongoClient.connect(DB, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	})
+	console.log('DB Connected Successfully.')
+	db = client.db('quizdom-project')
+}
+DBStart()
 
 
-// const DBStart = async () => {
-// 	console.log('DB server connecting...')
-// 	const client = await MongoClient.connect(API_KEY, {
-// 		useNewUrlParser: true,
-// 		useUnifiedTopology: true
-// 	})
-// 	console.log('DB Connected Successfully.')
-// 	db = client.db('quizdom-project')
-// }
-// DBStart()
 const withDB = async (operations, res) => {
 	try {
 		await operations(db)
