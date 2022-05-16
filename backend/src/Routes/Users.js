@@ -18,7 +18,7 @@ Router.get('/:uid', (req, res) => {
 	if (!uid) return res.status(500).json({ error: 'Incomplete Parameters' })
 
 	DB.withDB(async (db) => {
-		const createdCursor = db
+		const createdCursor = await db
 			.collection('quizzes')
 			.find({ uid })
 			.project({
@@ -30,11 +30,11 @@ Router.get('/:uid', (req, res) => {
 				},
 			})
 		const createdQuiz = await createdCursor.toArray()
-		console.log(createdQuiz)
 		const userCursor = await db.collection('users').find({ uid }).project({
 			attemptedQuiz: 1,
 		})
 		const userInfo = await userCursor.toArray()
+		console.log(userInfo)
 		if (userInfo) {
 			const attemptedCursor = db
 				.collection('quizzes')
@@ -50,6 +50,7 @@ Router.get('/:uid', (req, res) => {
 			console.log(attemptedQuiz)
 			res.status(200).json({ createdQuiz, attemptedQuiz })
 		} else {
+			console.log("error")
 			res.status(200).json({ createdQuiz })
 		}
 	}, res)

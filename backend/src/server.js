@@ -20,6 +20,6 @@ app.use('*', (req, res) => {
 	res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 // Listening to APIs
-app.listen(process.env.PORT || 8000, () =>
+app.listen(process.env.REACT_APP_HOST || 8000, () =>
 	console.log('Listening on Port 8000')
 )

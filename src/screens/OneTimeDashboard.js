@@ -18,12 +18,19 @@ const OneTimeDashboard = ({ user }) => {
 					<h1 className='white'>
 						<b>Quiz</b>dom
 					</h1>
-					<button className='button one-time-button' onClick={onDashboard}>
+					{
+					user.email=="tushar.verma@betaque.com" ? <><button className='button one-time-button' onClick={onDashboard}>
 						Dashboard
-					</button>
-					<button className='button one-time-button' onClick={onCreateQuiz}>
+					</button><button className='button one-time-button' onClick={onCreateQuiz}>
 						Create Quiz
-					</button>
+					</button> </>
+					:
+					null
+					
+					
+					}
+					
+					
 					<button className='button one-time-button' onClick={onJoinQuiz}>
 						Join Quiz
 					</button>

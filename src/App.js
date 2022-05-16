@@ -17,6 +17,7 @@ import AttemptQuiz from './screens/AttemptQuiz'
 import Appbar from './components/Appbar'
 import Responses from './screens/Responses'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
+require('dotenv').config()
 
 const App = () => {
 	const [user, setUser] = useState({})
@@ -28,7 +29,7 @@ const App = () => {
 					firebase.auth().currentUser.metadata.creationTime
 				) {
 					try {
-						await fetch('/API/users/create', {
+						await fetch(`${process.env.REACT_APP_HOST}/API/users/create`, {
 							method: 'POST',
 							body: JSON.stringify({
 								uid: user.uid,

@@ -22,6 +22,7 @@ import firebase from 'firebase';
 // const app = initializeApp(firebaseConfig);
 // const analytics = analytics(app);
 
+console.log()
 
 const firebaseConfig = {
   apiKey: "AIzaSyBuOziZCT7SeauAlLt9481vA-kW4dtwnEY",

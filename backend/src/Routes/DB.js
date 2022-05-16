@@ -13,7 +13,8 @@ const DBStart = async () => {
 		useUnifiedTopology: true
 	})
 	console.log('DB Connected Successfully.')
-	db = client.db('quizdom-project')
+	db = client.db('quizDom-bq')
+	// console.log(db.collection('quizzes'))
 }
 DBStart()
 
@@ -31,7 +32,9 @@ const withDB = async (operations, res) => {
 const createUser = async (uid, name, email, res) => {
 	await withDB(async (db) => {
 		const user = await db.collection('users').findOne({ uid: uid })
+		console.log(user)
 		if (!user) {
+			console.log("Entered creating user")
 			const result = await db.collection('users').insertOne({
 				uid,
 				name,

@@ -5,8 +5,7 @@ import AddQuestionModal from '../components/AddQuestionModal'
 import QuestionsTable from '../components/QuestionsTable'
 import { Switch } from '@material-ui/core'
 import LoadingScreen from './LoadingScreen'
-console.log('ej')
-console.log(process.env)
+require('dotenv').config()
 
 const CreateQuiz = ({
 	user,
@@ -50,7 +49,7 @@ const CreateQuiz = ({
 		setLoading('start')
 		try {
 			console.log(process.env.BACKEND_HOST)
-			const result = await fetch(`http://localhost:8000/API/quizzes/create`, {
+			const result = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/create`, {
 				method: 'POST',
 				body: JSON.stringify({
 					title,
