@@ -76,7 +76,7 @@ const UserDashboard = ({ user }) => {
 	if (loading) return <LoadingScreen />
 	
 	const validateRedirection = () =>{
-		return <Redirect exact={'http://quiz.betaque.com'} />
+		return <Redirect exact={process.env.REACT_APP_HOST} />
 	}
 
 	if (editQuiz.length)

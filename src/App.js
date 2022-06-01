@@ -17,6 +17,7 @@ import AttemptQuiz from './screens/AttemptQuiz'
 import Appbar from './components/Appbar'
 import Responses from './screens/Responses'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
+import CurrentUser from './firebase/currentUser'
 require('dotenv').config()
 
 const App = () => {
@@ -48,7 +49,6 @@ const App = () => {
 		}
 		createUserInDB()
 	}, [user])
-
 	return (
 		<div className='App'>
 			{!firebase.auth().currentUser ? (
@@ -62,8 +62,13 @@ const App = () => {
 						<Route exact path='/'>
 							<OneTimeDashBoard user={user} />
 						</Route>
+						<Route path='/currentUser'>
+							<CurrentUser user={user} />
+						</Route>
 						<Route path='/dashboard'>
-							<UserDashboard user={user} />
+							{	
+								user.email==="tushar.verma@betaque.com" ? <UserDashboard user={user} /> : <NotFoundPage />
+							}
 						</Route>
 						<Route path='/create-quiz'>
 							<CreateQuiz user={user} />

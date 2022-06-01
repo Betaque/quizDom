@@ -49,6 +49,13 @@ const createUser = async (uid, name, email, res) => {
 	})
 }
 
+const getUser = async (uid,res) =>{
+	await withDB(async(db) => {
+		const user = await db.collection('users').findOne({ uid: uid })
+		console.log(user)
+	}
+)}
+
 createQuiz = async (quiz, res) => {
 	try {
 		await withDB(async (db) => {
@@ -161,6 +168,7 @@ const getResponses = (obj, res) => {
 
 module.exports.withDB = withDB
 module.exports.createUser = createUser
+module.exports.getUser = getUser
 module.exports.createQuiz = createQuiz
 module.exports.submitQuiz = submitQuiz
 module.exports.getResponses = getResponses

@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import './Sidebar.css'
 import firebase from '../firebase/firebase'
+import Home from '../screens/Home'
 import { Icon } from '@material-ui/core'
+
 import {
 	CreateNewFolder,
 	Dashboard,
@@ -11,6 +13,8 @@ import {
 	MenuOpenRounded,
 	MenuRounded,
 } from '@material-ui/icons'
+
+require('dotenv').config()
 
 function Sidebar() {
 	const [signOut, setSignOut] = useState(false)
@@ -35,11 +39,18 @@ function Sidebar() {
 		},
 	]
 	const [sidebar, setSidebar] = useState(false)
+	const [user, setUser] = useState({})
 	const showSidebar = () => setSidebar(!sidebar)
 	if (signOut) return <Redirect to='/' />
 
+	
 	return (
-		<div>
+		<div className='App'>
+			{!firebase.auth().currentUser ? (
+			<Home setUser={setUser} />
+		) : (
+		<>
+			<div>
 			<Icon className='menu-bars' onClick={showSidebar}>
 				<MenuRounded />
 			</Icon>
@@ -54,10 +65,14 @@ function Sidebar() {
 					{SidedbarData.map((item, index) => {
 						return (
 							<li key={index} className='nav-text'>
-								<Link to={item.path}>
-									<Icon>{item.icon}</Icon>
-									<span className='nav-item-title'>{item.title}</span>
-								</Link>
+								{
+									user.email==="tushar.verma@betaque.com" && item.title==='Join Quiz' ? 
+									<Link to={item.path}>
+										<Icon>{item.icon}</Icon>
+									 	<span className='nav-item-title'>{item.title}</span>
+									</Link>
+									:''
+								}
 							</li>
 						)
 					})}
@@ -80,6 +95,11 @@ function Sidebar() {
 				</ul>
 			</nav>
 		</div>
+			</>
+		)}
+		</div>
+			
+		
 	)
 }
 

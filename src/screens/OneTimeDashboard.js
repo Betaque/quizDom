@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import './OneTimeDashboard.css'
+require('dotenv').config()
 
 const OneTimeDashboard = ({ user }) => {
 	const [path, setPath] = useState('')
@@ -19,18 +20,18 @@ const OneTimeDashboard = ({ user }) => {
 						<b>Quiz</b>dom
 					</h1>
 					{
-					user.email=="tushar.verma@betaque.com" ? <><button className='button one-time-button' onClick={onDashboard}>
-						Dashboard
-					</button><button className='button one-time-button' onClick={onCreateQuiz}>
-						Create Quiz
-					</button> </>
-					:
-					null
-					
-					
+						user.email==="tushar.verma@betaque.com" ? 
+						<>
+							<button className='button one-time-button' onClick={onDashboard}>
+								Dashboard
+							</button>
+							<button className='button one-time-button' onClick={onCreateQuiz}>
+								Create Quiz
+							</button> 
+						</>
+						:
+						""
 					}
-					
-					
 					<button className='button one-time-button' onClick={onJoinQuiz}>
 						Join Quiz
 					</button>
