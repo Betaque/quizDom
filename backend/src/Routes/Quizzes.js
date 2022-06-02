@@ -4,9 +4,16 @@ const DB = require('./DB')
 const ObjectId = require('mongodb').ObjectId
 const axios = require('axios')
 
+// Middleware
+
+const validateUser = async (req,res,next) =>{
+	req.body.uid == "z6c7y5wUSZM4iPohVfrvII5EuTk2" ? next() : res.json({"message":"unauthorized"})  
+}
+
 
 // Get Quiz Data
 Router.post('/join', (req, res) => {
+	console.log(req.body)
 	const { quizId, uid } = req.body
 	if (!quizId || !uid)
 		return res.status(500).json({ error: 'Incomplete Parameters' })
@@ -23,7 +30,7 @@ Router.post('/join', (req, res) => {
 				})
 
 			const quizData = await cursor.toArray()
-			console.log(quizData)
+			// console.log("quizData",quizData)
 			if (!quizData[0].isOpen)
 				res.status(500).json({ error: 'ERR:QUIZ_ACCESS_DENIED' })
 			else {
@@ -50,11 +57,12 @@ Router.post('/join', (req, res) => {
 Router.post('/submit', (req, res) => {
 	const quiz = req.body
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
+	console.log("quiz response",quiz)
 	DB.submitQuiz(quiz, res)
 })
 
 // Create Quiz
-Router.post('/create', (req, res) => {
+Router.post('/create', validateUser, (req, res) => {
 	console.log("Entered")
 	const quiz = req.body
 	console.log(quiz)
@@ -66,7 +74,7 @@ Router.post('/create', (req, res) => {
 	DB.createQuiz(quiz, res)
 })
 
-Router.post('/edit', (req, res) => {
+Router.post('/edit', validateUser, (req, res) => {
 	const { quizId, uid, title, questions, isOpen } = req.body
 
 	DB.withDB(async (db) => {
@@ -95,7 +103,7 @@ Router.post('/edit', (req, res) => {
 	})
 })
 
-Router.post('/responses', (req, res) => {
+Router.post('/responses', validateUser, (req, res) => {
 	const reqBody = req.body
 	console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)

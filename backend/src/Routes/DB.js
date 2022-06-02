@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb')
 const Evaluate = require('../Algorithms/EvaluateQuiz')
+const Answers = require('../Algorithms/AnswerQuiz')
 const ObjectId = require('mongodb').ObjectId
 const API_KEY = require('../db-config').database
 let db
@@ -93,6 +94,8 @@ submitQuiz = async (submittedQuiz, res) => {
 			const quizData = await validationCursor.toArray()
 
 			console.log({ quizData })
+			console.log("dbquiz",quizData)
+			console.log("submittedQuiz",submittedQuiz.questions)
 			// If the quiz is already submitted, DONOT submit it.
 			if (quizData[0]) {
 				console.log('in quiz already attempted')
@@ -100,15 +103,17 @@ submitQuiz = async (submittedQuiz, res) => {
 					error: 'ERR:QUIZ_ALREADY_ATTEMPTED'
 				})
 			}
-			const cursor = db
+			const cursor = await db
 				.collection('quizzes')
 				.find({ _id: new ObjectId(submittedQuiz.quizId) })
 				.project({ questions: 1 })
-
+			console.log("cursort",cursor)
 			const quiz = await cursor.toArray()
-
+			console.log("Quiz output", quiz.questions)
 			console.log('in quiz store')
 			const score = Evaluate(quiz[0].questions, submittedQuiz.questions)
+			const reply = Answers(quiz[0].questions, submittedQuiz.questions)
+			console.log("reply: ",reply)
 			console.log('score : ', score)
 			res.status(200).json({ score })
 
@@ -117,7 +122,7 @@ submitQuiz = async (submittedQuiz, res) => {
 				{ _id: new ObjectId(submittedQuiz.quizId) },
 				{
 					$push: {
-						responses: { uid: submittedQuiz.uid, score: score }
+						responses: { uid: submittedQuiz.uid, score: score, responses: reply }
 					}
 				}
 			)

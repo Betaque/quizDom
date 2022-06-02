@@ -25,6 +25,7 @@ const AttemptQuiz = ({ match }) => {
 				},
 			})
 			const quizData = await res.json()
+			console.log("quizData",quizData)
 			setLoading(false)
 			if (quizData.error) setQuizTitle(quizData.error)
 			else {
@@ -48,6 +49,7 @@ const AttemptQuiz = ({ match }) => {
 		const temp = [...attemptedQuestions]
 		const options = temp[index].selectedOptions
 		console.log('index:' + index)
+		console.log(options.includes(option))
 		if (!options.includes(option) && e.target.checked) {
 			if (attemptedQuestions[index].optionType === 'radio') options[0] = option
 			else options.push(option)
@@ -56,10 +58,13 @@ const AttemptQuiz = ({ match }) => {
 			const i = options.indexOf(option)
 			options.splice(i, 1)
 		}
+		console.log("options",options)
 		temp[index].selectedOptions = options
+		// console.log(temp)
+		// const val = temp[0].selectedOptions[0]
 		setAttemptedQuestions(temp)
 	}
-
+	console.log("a",attemptedQuestions)
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
 		try {

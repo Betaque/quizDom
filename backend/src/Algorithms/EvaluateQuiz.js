@@ -6,6 +6,7 @@ const EvaluateQuiz = (quizQuestions, attemptedQuestions) => {
 		const realQues = quizQuestions.find((x) => x.id === question.id)
 		const correctOptions = realQues.options.filter((op) => op.isCorrect)
 		// Error for Quiz with no correct answers
+		console.log("correctOptions",correctOptions)
 		if (correctOptions.length < 1) return 0
 
 		const attemptedOptions = question.selectedOptions
