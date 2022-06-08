@@ -7,13 +7,13 @@ const axios = require('axios')
 // Middleware
 
 const validateUser = async (req,res,next) =>{
-	req.body.uid == "z6c7y5wUSZM4iPohVfrvII5EuTk2" ? next() : res.json({"message":"unauthorized"})  
+	req.body.uid == "PIvoYBTQzEWKzlSBlLMNdiPsKR23" ? next() : res.json({"message":"unauthorized"})  
 }
 
 
 // Get Quiz Data
 Router.post('/join', (req, res) => {
-	console.log(req.body)
+	console.log("requestssssssssss",req.body)
 	const { quizId, uid } = req.body
 	if (!quizId || !uid)
 		return res.status(500).json({ error: 'Incomplete Parameters' })
@@ -53,6 +53,36 @@ Router.post('/join', (req, res) => {
 	}, res)
 })
 
+Router.post('/getres', (req,res) =>{
+	const { quizId, uid } = req.body
+	if (!quizId || !uid)
+		return res.status(500).json({ error: 'Incomplete Parameters' })
+
+		DB.withDB(async (db) => {
+			try {
+				const cursor = db
+					.collection('quizzes')
+					.find({ _id: new ObjectId(quizId) })
+					.project({
+						// Excluded Fields
+						responses: 0
+						// 'questions.options.isCorrect': 0,
+					})
+	
+				const quizData = await cursor.toArray()
+				console.log("quizDataaaaaaaaaaa",quizData)
+				const cursor2 = db.collection('users').find({
+					$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
+				})
+				const quiz2 = await cursor2.toArray()
+				res.status(200).json(quizData[0])
+				
+			} catch (error) {
+				res.status(500).json({ error: 'ERR:QUIZ_NOT_FOUND' })
+			}
+		}, res)
+})
+
 // Submit the quiz
 Router.post('/submit', (req, res) => {
 	const quiz = req.body
@@ -63,7 +93,7 @@ Router.post('/submit', (req, res) => {
 
 // Create Quiz
 Router.post('/create', validateUser, (req, res) => {
-	console.log("Entered")
+	console.log("hellloooooooooooo")
 	const quiz = req.body
 	console.log(quiz)
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
@@ -107,6 +137,11 @@ Router.post('/responses', validateUser, (req, res) => {
 	const reqBody = req.body
 	console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)
+})
+
+Router.get('/responses/:quizid/:uid', (req,res) =>{
+	const {quizid,uid} = req.params
+	DB.getQuizResponse(quizid,uid,res)
 })
 
 module.exports = Router

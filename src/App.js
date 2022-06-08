@@ -16,6 +16,7 @@ import NotFoundPage from './screens/NotFoundPage'
 import AttemptQuiz from './screens/AttemptQuiz'
 import Appbar from './components/Appbar'
 import Responses from './screens/Responses'
+import ShowResponses from './screens/ShowResponse'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
 import CurrentUser from './firebase/currentUser'
 require('dotenv').config()
@@ -86,6 +87,7 @@ const App = () => {
 							component={AttemptBlindQuiz}
 						/>
 						<Route path='/responses/:quizCode' component={Responses} />
+						<Route path='/res/:quizid/:uid' component={ShowResponses} />
 						<Route component={NotFoundPage} />
 					</Switch>
 				</>

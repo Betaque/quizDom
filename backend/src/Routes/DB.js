@@ -92,7 +92,6 @@ submitQuiz = async (submittedQuiz, res) => {
 			})
 
 			const quizData = await validationCursor.toArray()
-
 			console.log({ quizData })
 			console.log("dbquiz",quizData)
 			console.log("submittedQuiz",submittedQuiz.questions)
@@ -111,6 +110,7 @@ submitQuiz = async (submittedQuiz, res) => {
 			const quiz = await cursor.toArray()
 			console.log("Quiz output", quiz.questions)
 			console.log('in quiz store')
+			console.log("ausdjaskdjaskdjkas",submittedQuiz)
 			const score = Evaluate(quiz[0].questions, submittedQuiz.questions)
 			const reply = Answers(quiz[0].questions, submittedQuiz.questions)
 			console.log("reply: ",reply)
@@ -124,6 +124,14 @@ submitQuiz = async (submittedQuiz, res) => {
 					$push: {
 						responses: { uid: submittedQuiz.uid, score: score, responses: reply }
 					}
+				}
+			)
+			await db.collection('responses').insertOne(
+				{	
+					_id: submittedQuiz.quizId,
+					uid: submittedQuiz.uid, 
+					score: score,
+					responses: reply 
 				}
 			)
 			// Update user's attempted quizzes
@@ -151,7 +159,8 @@ const getResponses = (obj, res) => {
 		const cursorData = await cursor.toArray()
 		const responses = cursorData[0].responses
 		const uidList = responses.map((response) => response.uid)
-
+		console.log(uidList)
+		console.log(responses)
 		const cursor2 = db
 			.collection('users')
 			.find({ uid: { $in: uidList } })
@@ -171,9 +180,30 @@ const getResponses = (obj, res) => {
 	}, res)
 }
 
+const getQuizResponse = (qid,uid,res) =>{
+	try{
+		withDB(async (db) => {
+			const cursor = db
+				.collection('responses')
+				.find({ _id: qid, uid: uid})
+				.project({ responses: 1 })
+			const cursorData = await cursor.toArray()
+			const responses = cursorData[0].responses
+			const reply = responses.map((response) => response)
+			console.log("Cursor Data Quiz Response", cursorData)
+			console.log("Reply",reply)
+			res.status(200).json(reply)
+		},res)
+	}
+	catch{
+		console.log("Try the id")
+	}
+}
+
 module.exports.withDB = withDB
 module.exports.createUser = createUser
 module.exports.getUser = getUser
 module.exports.createQuiz = createQuiz
 module.exports.submitQuiz = submitQuiz
 module.exports.getResponses = getResponses
+module.exports.getQuizResponse = getQuizResponse

@@ -35,6 +35,23 @@ p {
 	width: 200px;
 }
 
+.label.red{
+	color: red;
+}
+
+.label.green{
+	color: green;
+}
+.label.green.bold{
+	font-weight: 800;
+	color: green;
+}
+
+.label.red.bold{
+	font-weight: 800;
+	color: red;
+}
+
 input[type='checkbox'],
 input[type='radio'] {
 	transform: scale(1.5);

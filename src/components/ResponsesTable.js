@@ -1,5 +1,6 @@
 import React from 'react'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { Link, useParams } from 'react-router-dom'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -7,7 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-
+import firebase from '../firebase/firebase'
 const StyledTableCell = withStyles((theme) => ({
 	head: {
 		backgroundColor: '#d81e5b',
@@ -39,8 +40,12 @@ const useStyles = makeStyles({
 	},
 })
 
+
 export default function ResponsesTable({ responses }) {
+	const params = useParams()
 	const classes = useStyles()
+	const uid = firebase.auth().currentUser.uid
+	const quizId = params.quizCode
 	const rows = responses.map((resp) => createData(resp))
 	return (
 		<TableContainer className={classes.paper} component={Paper}>
@@ -54,13 +59,15 @@ export default function ResponsesTable({ responses }) {
 				</TableHead>
 				<TableBody>
 					{rows.map((row) => (
-						<StyledTableRow key={row.name}>
+						<Link to={`/res/${quizId}/${uid}`}>
+							<StyledTableRow key={row.name}>
 							<StyledTableCell component='th' scope='row'>
 								{row.name}
 							</StyledTableCell>
 							<StyledTableCell align='center'>{row.email}</StyledTableCell>
 							<StyledTableCell align='right'>{row.score}</StyledTableCell>
-						</StyledTableRow>
+							</StyledTableRow>
+						</Link>
 					))}
 				</TableBody>
 			</Table>

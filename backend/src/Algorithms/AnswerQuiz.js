@@ -13,12 +13,12 @@ const AnswerQuiz = (quizQuestions, attemptedQuestions) => {
 		// Error for Quiz with no correct answers
 		if (correctOptions.length < 1) return 0
 		if (realQues.optionType === 'check') {
-			if (correctOptions.length < question.selectedOptions.length) {
+			// if (correctOptions.length < question.selectedOptions.length) {
 				question.selectedOptions.forEach((selectedOp) => {  
                     let id = realQues.id
                     answers.push({id,selectedOp})
                 })
-			}   
+			// }
 		} else if (realQues.optionType === 'radio') {
 			question.selectedOptions.forEach((selectedOp) => {
                 console.log("selectedOp",selectedOp)   

@@ -21,7 +21,7 @@ const Responses = ({ match }) => {
 				},
 			})
 			const result = await res.json()
-			console.log(result)
+			console.log("resssuulltt",result)
 			setResponses(result.finalResponse)
 			setLoading(false)
 		}
