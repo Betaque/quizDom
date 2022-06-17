@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import AttemptedModal from './AttemptedModal'
+import Timer from "../components/Timer";
+import Settings from "../components/Settings";
+import SettingsContext from "../components/SettingsContext";
+import SubmitTime from "../components/SubmitTime"
 require('dotenv').config()
 
 
@@ -15,6 +19,11 @@ const AttemptQuiz = ({ match }) => {
 	const [result, setResult] = useState({})
 	const [showModal, setShowModal] = useState(false)
 	const uid = firebase.auth().currentUser.uid
+	// const [quizStatus, setQuizStatus] = useState(false)
+	const [timer,setTimer] = useState(true)
+	const [showSettings, setShowSettings] = useState(false);
+	// setting the exam time
+  	const [workMinutes, setWorkMinutes] = useState(1);
 	useEffect(() => {
 		const fetchQuiz = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
@@ -90,7 +99,8 @@ const AttemptQuiz = ({ match }) => {
 
 	if (loading) return <LoadingScreen />
 	// For Quiz not Found
-	if (quizTitle === 'ERR:QUIZ_NOT_FOUND')
+	if (quizTitle === 'ERR:QUIZ_NOT_FOUND'){
+		setTimer(false)
 		return (
 			<div className='loading'>
 				<h1>404 Quiz Not Found!</h1>
@@ -102,8 +112,11 @@ const AttemptQuiz = ({ match }) => {
 				</h3>
 			</div>
 		)
+	}
+		
 	// For Quiz not accessible
-	else if (quizTitle === 'ERR:QUIZ_ACCESS_DENIED')
+	else if (quizTitle === 'ERR:QUIZ_ACCESS_DENIED'){
+		setTimer(false)
 		return (
 			<div className='loading'>
 				<h2>
@@ -118,24 +131,39 @@ const AttemptQuiz = ({ match }) => {
 				</h3>
 			</div>
 		)
+	}
+		
 	else if (quizTitle === 'ERR:QUIZ_ALREADY_ATTEMPTED')
-		return (
-			<div className='loading'>
-				<h2>You have already taken the Quiz.</h2>
-				<div id='logo-name'>
-					<b>Quiz</b>dom
+		{
+			setTimer(false)
+			return (
+				<div className='loading'>
+					<h2>You have already taken the Quiz.</h2>
+					<div id='logo-name'>
+						<b>Quiz</b>dom
+					</div>
+					<h3>
+						Go back to <Link to='/join-quiz'>Join Quiz </Link>Page.
+					</h3>
 				</div>
-				<h3>
-					Go back to <Link to='/join-quiz'>Join Quiz </Link>Page.
-				</h3>
-			</div>
-		)
+			)
+		}
 	else
 		return (
 			<div id='main-body'>
 				<div id='create-quiz-body'>
 					<div className='quiz-header'>
 						<h2>{quizTitle}</h2>
+					</div>
+				<div>
+					<SettingsContext.Provider value={{
+						showSettings,
+						setShowSettings,
+						workMinutes,
+						setWorkMinutes
+					}}>
+						{showSettings ? <Settings /> : <Timer />}
+					</SettingsContext.Provider>
 					</div>
 					{questions.map((question, index) => (
 						<div className='attempQuestionCard' key={index}>

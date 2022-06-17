@@ -3,6 +3,7 @@ const Router = express.Router()
 const DB = require('./DB')
 const ObjectId = require('mongodb').ObjectId
 const axios = require('axios')
+const timer = require('../Algorithms/TimerSystem')
 
 // Middleware
 
@@ -143,5 +144,15 @@ Router.get('/responses/:quizid/:uid', (req,res) =>{
 	const {quizid,uid} = req.params
 	DB.getQuizResponse(quizid,uid,res)
 })
+Router.get('/remaining_time', (req,res) =>{
+	let time = {"minute": 1 , "seconds": 0}
+	timer.evaluate(time)
+	res.json({time})
+})
 
+Router.get("/gettime", (req,res) =>{
+	let time = timer.sendTime()
+	console.log("t",time)
+	res.json({time})
+})
 module.exports = Router
