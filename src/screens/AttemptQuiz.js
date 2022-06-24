@@ -6,7 +6,7 @@ import AttemptedModal from './AttemptedModal'
 import Timer from "../components/Timer";
 import Settings from "../components/Settings";
 import SettingsContext from "../components/SettingsContext";
-import SubmitTime from "../components/SubmitTime"
+// import SubmitTime from "../components/SubmitTime"
 require('dotenv').config()
 
 
@@ -19,6 +19,7 @@ const AttemptQuiz = ({ match }) => {
 	const [result, setResult] = useState({})
 	const [showModal, setShowModal] = useState(false)
 	const uid = firebase.auth().currentUser.uid
+	const [qResps , setqResps] = useState([])
 	// const [quizStatus, setQuizStatus] = useState(false)
 	const [timer,setTimer] = useState(true)
 	const [showSettings, setShowSettings] = useState(false);
@@ -52,12 +53,36 @@ const AttemptQuiz = ({ match }) => {
 			}
 		}
 		fetchQuiz()
+
+		const fetchResponses = async () =>{
+			console.log("Entered")
+			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/fetchResponse`, {
+				method: 'POST',
+				body: JSON.stringify({ quizId: quizCode, uid }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			const data = await res.json()
+			data.forEach(element => {
+				// let id = element.id
+				// let op = element.selectedOp
+				setqResps("element",element)
+			});
+
+		}
+		fetchResponses()
+
 	}, [quizCode, uid])
 
-	const handleOptionSelect = (e, option, index) => {
+	const handleOptionChecked = async (option, index,id) =>{
+		console.log("ocheck",option,index,id)
+	}
+
+
+	const handleOptionSelect = async (e, option, index) => {
 		const temp = [...attemptedQuestions]
 		const options = temp[index].selectedOptions
-		console.log('index:' + index)
 		console.log(options.includes(option))
 		if (!options.includes(option) && e.target.checked) {
 			if (attemptedQuestions[index].optionType === 'radio') options[0] = option
@@ -69,14 +94,34 @@ const AttemptQuiz = ({ match }) => {
 		}
 		console.log("options",options)
 		temp[index].selectedOptions = options
-		// console.log(temp)
-		// const val = temp[0].selectedOptions[0]
+		const value = temp[index]
+		console.log("t2",temp[index])
+		try {
+			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
+				method: 'POST',
+				body: JSON.stringify({
+					uid,
+					quizId: quizCode,
+					questions: value,
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			const body = await res.json()
+			// setResult(body)
+			// setShowModal(true)
+			console.log('res body : ', body)
+		} catch (e) {
+			console.log('Error Submitting quiz', e)
+		}
+
 		setAttemptedQuestions(temp)
 	}
 	console.log("a",attemptedQuestions)
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
-		try {
+		try {console.log("jii")
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/submit`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -175,9 +220,13 @@ const AttemptQuiz = ({ match }) => {
 											<input
 												type='radio'
 												name={`option${index}`}
-												onChange={(e) =>
-													handleOptionSelect(e, option.text, index)
+												checked={
+													handleOptionChecked(option.text, index,question.id)
 												}
+												onChange={(e) =>{
+													handleOptionSelect(e, option.text, index)
+												}	
+											}
 											/>
 										) : (
 											<input

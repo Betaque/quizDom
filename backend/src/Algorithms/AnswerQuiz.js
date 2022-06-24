@@ -16,6 +16,7 @@ const AnswerQuiz = (quizQuestions, attemptedQuestions) => {
 			// if (correctOptions.length < question.selectedOptions.length) {
 				question.selectedOptions.forEach((selectedOp) => {  
                     let id = realQues.id
+                    console.log("selectedOp",selectedOp)  
                     answers.push({id,selectedOp})
                 })
 			// }

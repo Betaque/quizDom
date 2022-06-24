@@ -80,6 +80,130 @@ createQuiz = async (quiz, res) => {
 	}
 }
 
+const updateQuiz = async (updatedQuiz,res) =>{
+	withDB(async (db) => {
+		try {
+		// Check whether the user has already submitted the Quiz
+			console.log("updatedQuiz",updatedQuiz)
+			const validationCursor = db.collection('users').find({
+				$and: [
+					{ uid: updatedQuiz.uid },
+					{ attemptedQuiz: updatedQuiz.quizId }
+				]
+			})
+			const quizData = await validationCursor.toArray()
+			// If the quiz is already submitted, DONOT submit it.
+			if (quizData[0]) {
+				console.log('in quiz already attempted')
+				return res.status(200).json({
+					error: 'ERR:QUIZ_ALREADY_ATTEMPTED'
+				})
+			}
+			const id = updatedQuiz.questions.id
+			const sop = updatedQuiz.questions.selectedOptions
+			console.log("vvv",id,sop)
+			const reply = [{"id":id,"selectedOp":sop}]
+			console.log("reply",reply)
+			console.log("updaQuiz",updatedQuiz.questions)
+			// 629f65ab2560ba321cf691c0
+			const vid = await db.collection('responses').find({_id:updatedQuiz.quizId})
+			// console.log(vid)
+			const quiz = await vid.toArray()
+			// console.log("length",quiz[0])
+			// const vid = await db.collection('responses').find({_id:"629f65ab2560ba321cf691c1"})
+			if(quiz[0] != undefined){
+				const quiz = await vid.toArray()
+				console.log("length",quiz[0])
+				console.log("r",quiz[0].responses)
+				const arrayResponses = quiz[0].responses
+				console.log("aresp",updatedQuiz.questions.id)
+				function checkId(resp){
+					let item = resp.map((resps) => {
+						if(resps.id == updatedQuiz.questions.id){
+							console.log("found")
+							return true
+						}
+					}).filter(function(resps){return resps;})[0];
+					return item
+					
+				}
+				const returnedVal = checkId(arrayResponses);
+				console.log("rvalll",returnedVal)
+				if(returnedVal){
+					let i=0
+					console.log("This question exists")
+					console.log("arrayResponses",arrayResponses)
+					arrayResponses.forEach(async (res) => {
+						if(res.id == updatedQuiz.questions.id){
+							console.log("idval",i)
+							let deletedOb = arrayResponses[i]
+							await db.collection('responses').updateOne(
+								{ 
+									_id: updatedQuiz.quizId,
+									uid: updatedQuiz.uid
+								},
+								{
+									$pull: {
+										responses: { $in: [deletedOb] }
+									}
+								}
+							) 
+							let reply = {"id":id,"selectedOp":sop}
+							console.log("rrrr",reply)
+							await db.collection('responses').updateOne(
+								{ 
+									_id: updatedQuiz.quizId,
+									uid: updatedQuiz.uid
+								},
+								{ $push: { responses: reply } }
+							 )
+						}
+						i++
+					});
+					// await db.collection('responses').update(
+					// 	{ 
+					// 		_id: updatedQuiz.quizId,
+					// 		uid: updatedQuiz.uid
+					// 	},
+					// 	{ $set:
+					// 	   {
+					// 		 quantity: 500,
+					// 		 details: { model: "14Q3", make: "xyz" },
+					// 		 tags: [ "coats", "outerwear", "clothing" ]
+					// 	   }
+					// 	}
+					//  )
+
+				}else{
+					let reply = {"id":id,"selectedOp":sop}
+					console.log("This question does not exists")
+					console.log("iddddddddd",updatedQuiz.questions.id)
+					console.log("replyyyy",reply)
+					await db.collection('responses').updateOne(
+						{ 
+							_id: updatedQuiz.quizId,
+							uid: updatedQuiz.uid
+						},
+						{ $push: { responses: reply } }
+					 )
+				}
+			}else{
+				console.log("This quiz does not exists")
+				await db.collection('responses').insertOne(
+					{	
+						_id: updatedQuiz.quizId,
+						uid: updatedQuiz.uid, 
+						responses: reply 
+					}
+				)
+			}	
+		}
+		catch (error){
+			console.log(error)
+		}
+	})
+}
+
 submitQuiz = async (submittedQuiz, res) => {
 	withDB(async (db) => {
 		try {
@@ -201,6 +325,7 @@ const getQuizResponse = (qid,uid,res) =>{
 }
 
 module.exports.withDB = withDB
+module.exports.updateQuiz = updateQuiz
 module.exports.createUser = createUser
 module.exports.getUser = getUser
 module.exports.createQuiz = createQuiz

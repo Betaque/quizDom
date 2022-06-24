@@ -84,12 +84,47 @@ Router.post('/getres', (req,res) =>{
 		}, res)
 })
 
+// Get the responses that are submitted ontime
+
+Router.post('/fetchResponse', (req,res) =>{
+	const { quizId, uid } = req.body;
+	if (!quizId || !uid)
+		return res.status(500).json({ error: 'Incomplete Parameters' })
+	
+		DB.withDB(async (db) => {
+			try {
+				const cursor = db
+					.collection('responses')
+					.find({ _id: quizId, uid: uid })
+				console.log("cursor",cursor)
+				const quizData = await cursor.toArray()
+				console.log("quizDataaaaaaaaaaa",quizData[0].responses)
+				// const cursor2 = db.collection('users').find({
+				// 	$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
+				// })
+				// const quiz2 = await cursor2.toArray()
+				res.status(200).json(quizData[0].responses)
+			} catch (error) {
+				res.status(500).json({ error: 'ERR:QUIZ_NOT_FOUND' })
+			}
+		}, res)
+})
+
 // Submit the quiz
 Router.post('/submit', (req, res) => {
 	const quiz = req.body
+	console.log("hii")
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
 	console.log("quiz response",quiz)
 	DB.submitQuiz(quiz, res)
+})
+
+// Update options
+
+Router.post('/update', (req,res) =>{
+	const update = req.body
+	console.log("update",update)
+	DB.updateQuiz(update, res)
 })
 
 // Create Quiz
