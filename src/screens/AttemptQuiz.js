@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
@@ -25,7 +25,41 @@ const AttemptQuiz = ({ match }) => {
 	const [showSettings, setShowSettings] = useState(false);
 	// setting the exam time
   	const [workMinutes, setWorkMinutes] = useState(1);
+	// const checkRefs = useRef(null)
+	const refs = useRef([]);
+	refs.current = [];
+	const check = (el) =>{
+		if(el && !refs.current.includes(el)){
+			refs.current.push(el)
+		}
+		// console.log(checkRefs.current)
+		// checkRefs.current.checked=true
+	}
+
+	const setOp = (e) =>{
+		// console.log("element",e.target)
+		
+		refs.current.forEach(element => {
+			console.log(element.checked)
+			// console.log("e2",element.checked)
+			// 	console.log("ele",element)
+			// if(e.target === element){
+			// 	console.log(e.target)
+			// 	console.log(element)
+			// 	console.log(e.target.checked)
+			// 	console.log(element.checked)
+			// }
+		});
+		refs.current.map((val) =>{
+			console.log("vvv",val)
+		})
+	}
+
+
 	useEffect(() => {
+
+		
+
 		const fetchQuiz = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
 				method: 'POST',
@@ -64,38 +98,63 @@ const AttemptQuiz = ({ match }) => {
 				},
 			})
 			const data = await res.json()
-			data.forEach(element => {
+			let arr = []
+			data.forEach((element) => {
 				// let id = element.id
 				// let op = element.selectedOp
-				setqResps("element",element)
+				// console.log("ielement",element)
+				arr.push(element)
+				// setqResps(state => [...state, element])
 			});
 
+			setqResps(arr)
 		}
 		fetchResponses()
 
 	}, [quizCode, uid])
 
-	const handleOptionChecked = async (option, index,id) =>{
-		console.log("ocheck",option,index,id)
+	const handleOptionChecked = (option, index,id) =>{
+		// console.log("ocheck",option,id)
+		let selected = false
+		// console.log("qresps",qResps)
+		qResps.forEach((op) =>{
+			// console.log("Optsss",op)
+			if(op.id === id){
+				// console.log(op.id,id)
+				op.selectedOp.forEach((ops) =>{
+					if(ops === option){
+						// console.log("Selected Options Match", ops,option)
+						selected = true
+					}
+				})
+			}
+		})
+		// console.log(selected)
+
+		return selected
 	}
+
+	// const resetVal = (val) =>{
+	// 	console.log("val",val)
+	// }
 
 
 	const handleOptionSelect = async (e, option, index) => {
 		const temp = [...attemptedQuestions]
 		const options = temp[index].selectedOptions
-		console.log(options.includes(option))
+		
 		if (!options.includes(option) && e.target.checked) {
 			if (attemptedQuestions[index].optionType === 'radio') options[0] = option
 			else options.push(option)
 		}
-		if (options.includes(option) && !e.target.checked) {
+		if (options.includes(option) && !e.target.checked) {	
 			const i = options.indexOf(option)
 			options.splice(i, 1)
 		}
 		console.log("options",options)
 		temp[index].selectedOptions = options
 		const value = temp[index]
-		console.log("t2",temp[index])
+		// console.log("t2",temp[index])
 		try {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
 				method: 'POST',
@@ -121,7 +180,8 @@ const AttemptQuiz = ({ match }) => {
 	console.log("a",attemptedQuestions)
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
-		try {console.log("jii")
+		try {
+			// console.log("jii")
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/submit`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -217,17 +277,25 @@ const AttemptQuiz = ({ match }) => {
 								{question.options.map((option, ind) => (
 									<div className='option' key={ind}>
 										{question.optionType === 'radio' ? (
-											<input
+												<input
 												type='radio'
 												name={`option${index}`}
+												id={question.title+option.text}
+												// ref={checkRefs}
+												onChange={(e) =>{
+													setOp(e)
+													handleOptionSelect(e, option.text, index)
+													}		
+												}
+												ref={check}
 												checked={
 													handleOptionChecked(option.text, index,question.id)
 												}
-												onChange={(e) =>{
-													handleOptionSelect(e, option.text, index)
-												}	
-											}
+												// onClick={(e)=>setOp(e)}
+												// onClick={check}
+												
 											/>
+											
 										) : (
 											<input
 												type='checkbox'
@@ -243,6 +311,7 @@ const AttemptQuiz = ({ match }) => {
 									</div>
 								))}
 							</div>
+							{/* <button onClick={() => resetVal(question)}>reset</button> */}
 						</div>
 					))}
 					<button className='button wd-200' onClick={submitQuiz}>
