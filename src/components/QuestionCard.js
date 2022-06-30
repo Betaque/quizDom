@@ -5,35 +5,43 @@ const QuestionCard = (props) =>{
     const {question,index,quizCode,attemptedQuestions} = props
     // const [attemptedQuestions, setAttemptedQuestions] = useState([])
     const [qResps , setqResps] = useState([])
+	const [isVal,setisVal] = useState();
     const uid = firebase.auth().currentUser.uid
 
     useEffect(() =>{
-        const fetchResponses = async () =>{
-			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/fetchResponse`, {
-				method: 'POST',
-				body: JSON.stringify({ quizId: quizCode, uid }),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			const data = await res.json()
-			let arr = []
-			data.forEach((element) => {
-				// let id = element.id
-				// let op = element.selectedOp
-				// console.log("ielement",element)
-				arr.push(element)
-				// setqResps(state => [...state, element])
-			});
-
-			setqResps(arr)
+		try{
+			const fetchResponses = async () =>{
+				const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/fetchResponse`, {
+					method: 'POST',
+					body: JSON.stringify({ quizId: quizCode, uid }),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				})
+				const data = await res.json()
+				let arr = []
+				if(!data.error){
+					data.forEach((element) => {
+						arr.push(element)
+					});
+		
+					setqResps(arr)
+				}
+				
+			}
+			fetchResponses()
 		}
-		fetchResponses()
+        catch{
+			console.log("Quiz Not attempted Yet")
+		}
+		
+
     })
 
 
     const handleOptionChecked = (option, index,id) =>{
 		// console.log("ocheck",option,id)
+		// console.log("op",op)
 		let selected = false
 		// console.log("qresps",qResps)
 		qResps.forEach((op) =>{
@@ -48,14 +56,13 @@ const QuestionCard = (props) =>{
 				})
 			}
 		})
-		// console.log(selected)
-
 		return selected
 	}
 
     const handleOptionSelect = async (e, option, index) => {
 		const temp = [...attemptedQuestions]
         console.log("temp",temp)
+		console.log("sss",e.target)
 		const options = temp[index].selectedOptions
 		
 		if (!options.includes(option) && e.target.checked) {
@@ -67,6 +74,7 @@ const QuestionCard = (props) =>{
 			options.splice(i, 1)
 		}
 		console.log("options",options)
+		setisVal(options[0])
 		temp[index].selectedOptions = options
 		const value = temp[index]
 		// console.log("t2",temp[index])
@@ -93,6 +101,7 @@ const QuestionCard = (props) =>{
 	}
 
 
+
     return (
         <div className='attempQuestionCard' key={index}>
 							<div id='title'>{question.title}</div>
@@ -112,7 +121,8 @@ const QuestionCard = (props) =>{
 												}
 												// ref={check}
 												checked={
-													handleOptionChecked(option.text, index,question.id)
+													isVal === option.text || handleOptionChecked(option.text, index,question.id) ? true: false
+													// handleOptionChecked(option.text, index,question.id)
 												}
 												// onClick={(e)=>setOp(e)}
 												// onClick={check}
