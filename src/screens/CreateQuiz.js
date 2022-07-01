@@ -48,7 +48,8 @@ const CreateQuiz = ({
 		console.log('Quiz Creation Starts...')
 		setLoading('start')
 		try {
-			console.log(process.env.BACKEND_HOST)
+			console.log("question array", questionArray)
+			console.log(process.env.REACT_APP_HOST)
 			const result = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/create`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -62,7 +63,7 @@ const CreateQuiz = ({
 				}
 			})
 			console.log('Quiz posted ! ')
-			console.log(result)
+			console.log("result",result)
 			const body = await result.json()
 			console.log('Quiz Code : ', body.quizId)
 			setQuizCode(body.quizId)

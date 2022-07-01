@@ -31,29 +31,34 @@ const withDB = async (operations, res) => {
 }
 
 const createUser = async (uid, name, email, res) => {
-	await withDB(async (db) => {
-		const user = await db.collection('users').findOne({ uid: uid })
-		console.log(user)
-		if (!user) {
-			console.log("Entered creating user")
-			const result = await db.collection('users').insertOne({
-				uid,
-				name,
-				email,
-				createdQuiz: [],
-				attemptedQuiz: []
-			})
-			res.status(200).json({ message: 'User Created successfully.' })
-		} else {
-			res.status(200).json({ message: 'User Record Exist' })
-		}
-	})
+	try{
+		await withDB(async (db) => {
+			const user = await db.collection('users').findOne({ uid: uid })
+			// console.log(user)
+			if (!user) {
+				console.log("Entered creating user")
+				const result = await db.collection('users').insertOne({
+					uid,
+					name,
+					email,
+					createdQuiz: [],
+					attemptedQuiz: []
+				})
+				res.status(200).json({ message: 'User Created successfully.' })
+			} else {
+				res.status(200).json({ message: 'User Record Exist' })
+			}
+		})
+	}
+	catch{
+		res.status(404).json({ message: 'Error Occurred' })
+	}
 }
 
 const getUser = async (uid,res) =>{
 	await withDB(async(db) => {
 		const user = await db.collection('users').findOne({ uid: uid })
-		console.log(user)
+		// console.log(user)
 	}
 )}
 
@@ -99,12 +104,16 @@ const updateQuiz = async (updatedQuiz,res) =>{
 					error: 'ERR:QUIZ_ALREADY_ATTEMPTED'
 				})
 			}
+			console.log("updatedQuiz",updatedQuiz)
+			console.log("optionsId",updatedQuiz.optionId)
 			const id = updatedQuiz.questions.id
+			const optionId = updatedQuiz.optionId
+			
 			const sop = updatedQuiz.questions.selectedOptions
-			console.log("vvv",id,sop)
-			const reply = [{"id":id,"selectedOp":sop}]
-			console.log("reply",reply)
-			console.log("updaQuiz",updatedQuiz.questions)
+			// console.log("vvv",id,sop)
+			const reply = [{"id":id,"selectedOp":sop, "optionId": optionId}]
+			// console.log("reply",reply)
+			// console.log("updaQuiz",updatedQuiz.questions)
 			// 629f65ab2560ba321cf691c0
 			const vid = await db.collection('responses').find({_id:updatedQuiz.quizId})
 			// console.log(vid)
@@ -113,10 +122,10 @@ const updateQuiz = async (updatedQuiz,res) =>{
 			// const vid = await db.collection('responses').find({_id:"629f65ab2560ba321cf691c1"})
 			if(quiz[0] != undefined){
 				const quiz = await vid.toArray()
-				console.log("length",quiz[0])
-				console.log("r",quiz[0].responses)
+				// console.log("length",quiz[0])
+				// console.log("r",quiz[0].responses)
 				const arrayResponses = quiz[0].responses
-				console.log("aresp",updatedQuiz.questions.id)
+				// console.log("aresp",updatedQuiz.questions.id)
 				function checkId(resp){
 					let item = resp.map((resps) => {
 						if(resps.id == updatedQuiz.questions.id){
@@ -128,7 +137,7 @@ const updateQuiz = async (updatedQuiz,res) =>{
 					
 				}
 				const returnedVal = checkId(arrayResponses);
-				console.log("rvalll",returnedVal)
+				// console.log("rvalll",returnedVal)
 				if(returnedVal){
 					let i=0
 					console.log("This question exists")
@@ -148,7 +157,7 @@ const updateQuiz = async (updatedQuiz,res) =>{
 									}
 								}
 							) 
-							let reply = {"id":id,"selectedOp":sop}
+							let reply = {"id":id,"selectedOp":sop, "optionId": optionId}
 							console.log("rrrr",reply)
 							await db.collection('responses').updateOne(
 								{ 
@@ -160,22 +169,9 @@ const updateQuiz = async (updatedQuiz,res) =>{
 						}
 						i++
 					});
-					// await db.collection('responses').update(
-					// 	{ 
-					// 		_id: updatedQuiz.quizId,
-					// 		uid: updatedQuiz.uid
-					// 	},
-					// 	{ $set:
-					// 	   {
-					// 		 quantity: 500,
-					// 		 details: { model: "14Q3", make: "xyz" },
-					// 		 tags: [ "coats", "outerwear", "clothing" ]
-					// 	   }
-					// 	}
-					//  )
 
 				}else{
-					let reply = {"id":id,"selectedOp":sop}
+					let reply = {"id":id,"selectedOp":sop, "optionId": optionId}
 					console.log("This question does not exists")
 					console.log("iddddddddd",updatedQuiz.questions.id)
 					console.log("replyyyy",reply)
@@ -230,15 +226,15 @@ submitQuiz = async (submittedQuiz, res) => {
 				.collection('quizzes')
 				.find({ _id: new ObjectId(submittedQuiz.quizId) })
 				.project({ questions: 1 })
-			console.log("cursort",cursor)
+			// console.log("cursort",cursor)
 			const quiz = await cursor.toArray()
-			console.log("Quiz output", quiz.questions)
-			console.log('in quiz store')
-			console.log("ausdjaskdjaskdjkas",submittedQuiz)
+			// console.log("Quiz output", quiz.questions)
+			// console.log('in quiz store')
+			// console.log("ausdjaskdjaskdjkas",submittedQuiz)
 			const score = Evaluate(quiz[0].questions, submittedQuiz.questions)
 			const reply = Answers(quiz[0].questions, submittedQuiz.questions)
-			console.log("reply: ",reply)
-			console.log('score : ', score)
+			// console.log("reply: ",reply)
+			// console.log('score : ', score)
 			res.status(200).json({ score })
 
 			// Update in quizzes responses
@@ -283,8 +279,8 @@ const getResponses = (obj, res) => {
 		const cursorData = await cursor.toArray()
 		const responses = cursorData[0].responses
 		const uidList = responses.map((response) => response.uid)
-		console.log(uidList)
-		console.log(responses)
+		// console.log(uidList)
+		// console.log(responses)
 		const cursor2 = db
 			.collection('users')
 			.find({ uid: { $in: uidList } })
@@ -310,11 +306,11 @@ const getQuizResponse = (qid,uid,res) =>{
 			const cursor = db
 				.collection('responses')
 				.find({ _id: qid, uid: uid})
-				.project({ responses: 1 })
+				.project({ responses: 1, optionId: 1 })
 			const cursorData = await cursor.toArray()
 			const responses = cursorData[0].responses
 			const reply = responses.map((response) => response)
-			console.log("Cursor Data Quiz Response", cursorData)
+			// console.log("Cursor Data Quiz Response", cursorData)
 			console.log("Reply",reply)
 			res.status(200).json(reply)
 		},res)

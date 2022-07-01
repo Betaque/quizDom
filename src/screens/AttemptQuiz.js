@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
@@ -20,50 +20,13 @@ const AttemptQuiz = ({ match }) => {
 	const [result, setResult] = useState({})
 	const [showModal, setShowModal] = useState(false)
 	const uid = firebase.auth().currentUser.uid
-	const [qResps , setqResps] = useState([])
 	// const [quizStatus, setQuizStatus] = useState(false)
 	const [timer,setTimer] = useState(true)
 	const [showSettings, setShowSettings] = useState(false);
 	// setting the exam time
   	const [workMinutes, setWorkMinutes] = useState(1);
-	// const checkRefs = useRef(null)
-	const refs = useRef([]);
-	refs.current = [];
-	const check = (el) =>{
-		if(el && !refs.current.includes(el)){
-			refs.current.push(el)
-		}
-		// console.log(checkRefs.current)
-		// checkRefs.current.checked=true
-	}
-
-	const setOp = (e) =>{
-		// console.log("element",e.target)
-		
-		refs.current.forEach(element => {
-			console.log(element.checked)
-			// console.log("e2",element.checked)
-			// 	console.log("ele",element)
-			// if(e.target === element){
-			// 	console.log(e.target)
-			// 	console.log(element)
-			// 	console.log(e.target.checked)
-			// 	console.log(element.checked)
-			// }
-		});
-		refs.current.map((val) =>{
-			console.log("vvv",val)
-		})
-	}
-
-
-	
-
 
 	useEffect(() => {
-
-		
-
 		const fetchQuiz = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
 				method: 'POST',
@@ -75,7 +38,7 @@ const AttemptQuiz = ({ match }) => {
 			const quizData = await res.json()
 			console.log("quizData",quizData)
 			setLoading(false)
-			if (quizData.error) setQuizTitle(quizData.error)
+			if (quizData.error) {setQuizTitle(quizData.error)}
 			else {
 				setQuizTitle(quizData.title)
 				setQuestions(quizData.questions)
@@ -91,34 +54,7 @@ const AttemptQuiz = ({ match }) => {
 			}
 		}
 		fetchQuiz()
-
-
 	}, [quizCode, uid])
-
-	// const handleOptionChecked = (option, index,id) =>{
-	// 	// console.log("ocheck",option,id)
-	// 	let selected = false
-	// 	// console.log("qresps",qResps)
-	// 	qResps.forEach((op) =>{
-	// 		// console.log("Optsss",op)
-	// 		if(op.id === id){
-	// 			// console.log(op.id,id)
-	// 			op.selectedOp.forEach((ops) =>{
-	// 				if(ops === option){
-	// 					// console.log("Selected Options Match", ops,option)
-	// 					selected = true
-	// 				}
-	// 			})
-	// 		}
-	// 	})
-	// 	// console.log(selected)
-
-	// 	return selected
-	// }
-
-	// const resetVal = (val) =>{
-	// 	console.log("val",val)
-	// }
 
 
 	
@@ -148,6 +84,7 @@ const AttemptQuiz = ({ match }) => {
 	}
 
 	if (loading) return <LoadingScreen />
+
 	// For Quiz not Found
 	if (quizTitle === 'ERR:QUIZ_NOT_FOUND'){
 		setTimer(false)

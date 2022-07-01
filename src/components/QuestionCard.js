@@ -41,7 +41,7 @@ const QuestionCard = (props) =>{
 
     const handleOptionChecked = (option, index,id) =>{
 		// console.log("ocheck",option,id)
-		// console.log("op",op)
+		// console.log("ops",ops)
 		let selected = false
 		// console.log("qresps",qResps)
 		qResps.forEach((op) =>{
@@ -59,12 +59,13 @@ const QuestionCard = (props) =>{
 		return selected
 	}
 
-    const handleOptionSelect = async (e, option, index) => {
+    const handleOptionSelect = async (e, option,index,ops) => {
 		const temp = [...attemptedQuestions]
         console.log("temp",temp)
 		console.log("sss",e.target)
 		const options = temp[index].selectedOptions
-		
+		const opId = ops.id
+		// console.log("ops",ops)
 		if (!options.includes(option) && e.target.checked) {
 			if (attemptedQuestions[index].optionType === 'radio') options[0] = option
 			else options.push(option)
@@ -85,6 +86,7 @@ const QuestionCard = (props) =>{
 					uid,
 					quizId: quizCode,
 					questions: value,
+					optionId: opId
 				}),
 				headers: {
 					'Content-Type': 'application/json',
@@ -116,7 +118,7 @@ const QuestionCard = (props) =>{
 												// ref={checkRefs}
 												onChange={(e) =>{
 													// setOp(e)
-													handleOptionSelect(e, option.text, index)
+													handleOptionSelect(e, option.text, index,option)
 													}		
 												}
 												// ref={check}

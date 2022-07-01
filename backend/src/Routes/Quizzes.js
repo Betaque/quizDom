@@ -8,7 +8,7 @@ const timer = require('../Algorithms/TimerSystem')
 // Middleware
 
 const validateUser = async (req,res,next) =>{
-	req.body.uid == "PIvoYBTQzEWKzlSBlLMNdiPsKR23" ? next() : res.json({"message":"unauthorized"})  
+	req.body.uid == "KYf42ETgJkQHyomXwiUG4YPEvb93" ? next() : res.json({"message":"unauthorized"})  
 }
 
 
@@ -40,7 +40,7 @@ Router.post('/join', (req, res) => {
 				})
 
 				const quiz2 = await cursor2.toArray()
-				console.log('quiz 2 : ', quiz2)
+				// console.log('quiz 2 : ', quiz2)
 				if (quiz2[0]) {
 					console.log('in quiz already attempted')
 					res.status(200).json({
@@ -96,9 +96,9 @@ Router.post('/fetchResponse', (req,res) =>{
 				const cursor = db
 					.collection('responses')
 					.find({ _id: quizId, uid: uid })
-				console.log("cursor",cursor)
+				// console.log("cursor",cursor)
 				const quizData = await cursor.toArray()
-				console.log("quizDataaaaaaaaaaa",quizData[0].responses)
+				// console.log("quizDataaaaaaaaaaa",quizData[0].responses)
 				// const cursor2 = db.collection('users').find({
 				// 	$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
 				// })
@@ -115,7 +115,7 @@ Router.post('/submit', (req, res) => {
 	const quiz = req.body
 	console.log("hii")
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
-	console.log("quiz response",quiz)
+	// console.log("quiz response",quiz)
 	DB.submitQuiz(quiz, res)
 })
 
@@ -131,11 +131,16 @@ Router.post('/update', (req,res) =>{
 Router.post('/create', validateUser, (req, res) => {
 	console.log("hellloooooooooooo")
 	const quiz = req.body
-	console.log(quiz)
+	// console.log(quiz)
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
 
 	quiz.questions.forEach((question, i) => {
 		question['id'] = i + 1
+	})
+	quiz.questions.forEach((question) =>{
+		question.options.forEach((option,j) =>{
+			option['id'] = j + 1
+		})
 	})
 	DB.createQuiz(quiz, res)
 })
@@ -171,7 +176,7 @@ Router.post('/edit', validateUser, (req, res) => {
 
 Router.post('/responses', validateUser, (req, res) => {
 	const reqBody = req.body
-	console.log('Req Body : ', reqBody)
+	// console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)
 })
 

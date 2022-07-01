@@ -30,12 +30,14 @@ const ShowQuiz = ({ match }) => {
 				const quizData = await res.json()
 				console.log("quizData",quizData)
 				setLoading(false)
-				if (quizData.error) setQuizTitle(quizData.error)
+				if (quizData.error) console.log("quizData.error",quizData.error)
+				// setQuizTitle(quizData.error)
 				else {
 					const temp = quizData.map((question) => {
 						return {
 								id: question.id,
 								selectedOp: question.selectedOp,
+								optionId: question.optionId
 							}
 						})
 					setSelectedOptions(temp)
@@ -72,12 +74,32 @@ const ShowQuiz = ({ match }) => {
 		}, [quizCode, userCode, uid])
 
 		const getClass = (val,qindex) => {
+			let checking = val.isCorrect
 			for(let i = 0; i<selectedOptions.length ; i++){
-				if(qindex === selectedOptions[i].id && val.text === selectedOptions[i].selectedOp){
-					return val.isCorrect ? 'label green bold' : 'label red bold'
-				}else if(qindex === selectedOptions[i].id){
-					return val.isCorrect ? 'label green' : 'label red'
+
+				if(qindex === selectedOptions[i].id){
+					if(val.id === selectedOptions[i].optionId){
+						return checking == true ? console.log('label green bold',checking) : console.log('label red bold',checking)
+					}
+					else{
+						return (checking == true ? console.log('label green',checking) : console.log('label red',checking))
+					}
+
 				}
+
+
+
+
+
+
+
+
+				// else if(qindex === selectedOptions[i].id){
+				// 	// console.log("valCorrect",val.isCorrect)
+				// 	// console.log("selecteddddddddddddd oppppppppppppp", selectedOptions[i].selectedOp[0])
+				// 	val.isCorrect ? console.log("Correct hai") : console.log("galat hai")
+				// 	// return val.isCorrect ? 'label green' : 'label red'
+				// }
 			}
 		}
 	

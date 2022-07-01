@@ -1,6 +1,7 @@
 import { Switch, Route } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import firebase from './firebase/firebase'
+import axios from "axios"
 
 // Stylesheet
 import './App.css'
@@ -26,22 +27,27 @@ const App = () => {
 	useEffect(() => {
 		const createUserInDB = async () => {
 			if (user.uid)
+			console.log(user)
 				if (
 					firebase.auth().currentUser.metadata.lastSignInTime ===
 					firebase.auth().currentUser.metadata.creationTime
 				) {
 					try {
-						await fetch(`${process.env.REACT_APP_HOST}/API/users/create`, {
-							method: 'POST',
-							body: JSON.stringify({
-								uid: user.uid,
-								name: user.name,
-								email: user.email,
-							}),
-							headers: {
-								'Content-Type': 'application/json',
-							},
-						})
+						let data = {uid:user.uid, name: user.name , email: user.email}
+						axios.post(`${process.env.REACT_APP_HOST}/API/users/create`, data)
+						.then((response => console.log("response",response)))
+						
+						// await fetch(`${process.env.REACT_APP_HOST}/API/users/create`, {
+						// 	method: 'POST',
+						// 	body: JSON.stringify({
+						// 		uid: user.uid,
+						// 		name: user.name,
+						// 		email: user.email,
+						// 	}),
+						// 	headers: {
+						// 		'Content-Type': 'application/json',
+						// 	},
+						// })
 						console.log('posted')
 					} catch (error) {
 						console.log('User Creation Error: ', error)

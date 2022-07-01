@@ -26,10 +26,12 @@ const UserDashboard = ({ user }) => {
 			console.log("enter")
 			setIsValid(true)
 		}
-		
+
+		console.log(process.env.REACT_APP_HOST)
+		console.log(user.uid)
 		const fetchQuizData = async () => {
 			const results = await fetch(`${process.env.REACT_APP_HOST}/API/users/${user.uid}`)
-			console.log(results)
+			console.log("results",results)
 			const quizData = await results.json()
 			if (quizData.createdQuiz) setCreatedQuizzes(quizData.createdQuiz)
 			if (quizData.attemptedQuiz) setAttemptedQuizzes(quizData.attemptedQuiz)
