@@ -47,6 +47,7 @@ export default function ResponsesTable({ responses }) {
 	const uid = firebase.auth().currentUser.uid
 	const quizId = params.quizCode
 	const rows = responses.map((resp) => createData(resp))
+	console.log("responses",responses)
 	return (
 		<TableContainer className={classes.paper} component={Paper}>
 			<Table className={classes.table} aria-label='customized table'>
@@ -59,7 +60,7 @@ export default function ResponsesTable({ responses }) {
 				</TableHead>
 				<TableBody>
 					{rows.map((row) => (
-						<Link to={`/res/${quizId}/${uid}`}>
+						<Link to={`/res/${quizId}/${uid}`} state={{ from: "occupation" }}>
 							<StyledTableRow key={row.name}>
 							<StyledTableCell component='th' scope='row'>
 								{row.name}

@@ -1,10 +1,15 @@
 import React , { useEffect,useState } from 'react'
+// import { useLocation } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 require('dotenv').config()
 
 
+
 const ShowQuiz = ({ match }) => {
+	// const location = useLocation()
+	// const from = location.state.from
+	// console.log("from",from)
 	// useEffect(() =>{
 	// 	fetch('http://localhost:8000/API/quizzes/responses/6298baaaf056871b988a586d/z6c7y5wUSZM4iPohVfrvII5EuTk2')
 	// 	.then(response => console.log("Res from show response",response.json()))
@@ -13,23 +18,44 @@ const ShowQuiz = ({ match }) => {
 	const quizCode = match.params.quizid
 	const userCode = match.params.uid
 	const [questions, setQuestions] = useState([])
+	const [responses, setResponses] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')
-	const [result, setResult] = useState({})
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
-	const [showModal, setShowModal] = useState(false)
-	const [inputClassName, setInputClassName] = useState()
 	const uid = firebase.auth().currentUser.uid
 	const [loading, setLoading] = useState(true)
 	const [selectedOptions, setSelectedOptions] = useState([])
+
+
+
+
 	useEffect(() => {
 		//629df8f2969c4e06907dc706/z6c7y5wUSZM4iPohVfrvII5EuTk2
+
+		// Fetching the Student Details
+		const getResponses = async () => {
+			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/responses`, {
+				method: 'POST',
+				body: JSON.stringify({ quizCode: quizCode, uid }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			const result = await res.json()
+			console.log("resssuulltt",result)
+			setResponses(result.finalResponse)
+			setLoading(false)
+		}
+		getResponses()
+
+		// Fetching the Responses of a quiz
+
 			const fetchResponse = async () => {
 				const res = await fetch(`http://localhost:8000/API/quizzes/responses/${quizCode}/${userCode}`, {
 					method: 'GET'
 				})
 				const quizData = await res.json()
 				console.log("quizData",quizData)
-				setLoading(false)
+				// setLoading(false)
 				if (quizData.error) console.log("quizData.error",quizData.error)
 				// setQuizTitle(quizData.error)
 				else {
@@ -43,6 +69,9 @@ const ShowQuiz = ({ match }) => {
 					setSelectedOptions(temp)
 				}
 			}
+
+			// Fetching the Quiz
+			
 			const fetchQuiz = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/getres`, {
 				method: 'POST',
@@ -51,8 +80,8 @@ const ShowQuiz = ({ match }) => {
 					'Content-Type': 'application/json',
 				},
 			})
+
 			const quizData = await res.json()
-			console.log("quizzzzzzzdataaaaa",quizData)
 			setLoading(false)
 			if (quizData.error) setQuizTitle(quizData.error)
 			else {
@@ -71,7 +100,9 @@ const ShowQuiz = ({ match }) => {
 		}
 		fetchQuiz()
 		fetchResponse()
+		console.log("final response",responses)
 		}, [quizCode, userCode, uid])
+
 
 		const getClass = (val,qindex) => {
 			let checking = val.isCorrect
@@ -79,27 +110,13 @@ const ShowQuiz = ({ match }) => {
 
 				if(qindex === selectedOptions[i].id){
 					if(val.id === selectedOptions[i].optionId){
-						return checking == true ? console.log('label green bold',checking) : console.log('label red bold',checking)
+						return (checking === "true" ? 'label green bold' : 'label red bold')
 					}
 					else{
-						return (checking == true ? console.log('label green',checking) : console.log('label red',checking))
+						return (checking === "true" ? 'label green': 'label red')
 					}
 
 				}
-
-
-
-
-
-
-
-
-				// else if(qindex === selectedOptions[i].id){
-				// 	// console.log("valCorrect",val.isCorrect)
-				// 	// console.log("selecteddddddddddddd oppppppppppppp", selectedOptions[i].selectedOp[0])
-				// 	val.isCorrect ? console.log("Correct hai") : console.log("galat hai")
-				// 	// return val.isCorrect ? 'label green' : 'label red'
-				// }
 			}
 		}
 	
@@ -110,8 +127,8 @@ const ShowQuiz = ({ match }) => {
 					<div className='quiz-header'>
 						<h2>{quizTitle}</h2>
 						<div className='name'>
-								<p><strong>Name: </strong></p>
-								<p><strong>Score: </strong></p>
+								<p><strong>Name: {responses[0].name}</strong></p>
+								<p><strong>Score: {responses[0].score}</strong></p>
 							</div>
 					</div>
 					{questions.map((question, index) => (

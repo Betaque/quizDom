@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb')
+const {MongoClient} = require('mongodb')
 const Evaluate = require('../Algorithms/EvaluateQuiz')
 const Answers = require('../Algorithms/AnswerQuiz')
 const ObjectId = require('mongodb').ObjectId

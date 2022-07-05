@@ -176,7 +176,7 @@ Router.post('/edit', validateUser, (req, res) => {
 
 Router.post('/responses', validateUser, (req, res) => {
 	const reqBody = req.body
-	// console.log('Req Body : ', reqBody)
+	console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)
 })
 

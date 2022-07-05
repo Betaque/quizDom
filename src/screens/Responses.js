@@ -27,7 +27,7 @@ const Responses = ({ match }) => {
 		}
 		getResponses()
 	}, [quizId, uid])
-	console.log(responses)
+	console.log("responses222",responses)
 	if (loading) return <LoadingScreen />
 	else
 		return (
