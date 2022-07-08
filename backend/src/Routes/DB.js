@@ -226,15 +226,9 @@ submitQuiz = async (submittedQuiz, res) => {
 				.collection('quizzes')
 				.find({ _id: new ObjectId(submittedQuiz.quizId) })
 				.project({ questions: 1 })
-			// console.log("cursort",cursor)
 			const quiz = await cursor.toArray()
-			// console.log("Quiz output", quiz.questions)
-			// console.log('in quiz store')
-			// console.log("ausdjaskdjaskdjkas",submittedQuiz)
 			const score = Evaluate(quiz[0].questions, submittedQuiz.questions)
-			const reply = Answers(quiz[0].questions, submittedQuiz.questions)
-			// console.log("reply: ",reply)
-			// console.log('score : ', score)
+			// const reply = Answers(quiz[0].questions, submittedQuiz.questions)
 			res.status(200).json({ score })
 
 			// Update in quizzes responses
@@ -242,19 +236,11 @@ submitQuiz = async (submittedQuiz, res) => {
 				{ _id: new ObjectId(submittedQuiz.quizId) },
 				{
 					$push: {
-						responses: { uid: submittedQuiz.uid, score: score, responses: reply }
+						responses: { uid: submittedQuiz.uid, score: score }
 					}
 				}
 			)
-			await db.collection('responses').insertOne(
-				{	
-					_id: submittedQuiz.quizId,
-					uid: submittedQuiz.uid, 
-					score: score,
-					responses: reply 
-				}
-			)
-			// Update user's attempted quizzes
+
 			await db.collection('users').updateOne(
 				{ uid: submittedQuiz.uid },
 				{
@@ -263,12 +249,52 @@ submitQuiz = async (submittedQuiz, res) => {
 					}
 				}
 			)
+			// await db.collection('responses').insertOne(
+			// 	{	
+			// 		_id: submittedQuiz.quizId,
+			// 		uid: submittedQuiz.uid, 
+			// 		score: score,
+			// 		responses: reply 
+			// 	}
+			// )
+			// Update user's attempted quizzes
+			
 		} catch (error) {
 			console.log('Error:', error)
 			res.status(500).json({ error })
 		}
 	})
 }
+
+const getModals = (user,qid,res) =>{
+	console.log("qid",qid)
+	try{
+		withDB(async (db) =>{
+			const cursor = db.collection('quizzes').find({_id: new ObjectId(qid)})
+			// console.log("cursor",cursor)
+			const cursorData = await cursor.toArray()
+			// console.log("cursorData",cursorData)
+			const responses = cursorData[0].responses
+			let found = false
+			responses.forEach(resps => {
+				console.log("resps",resps.uid)
+				console.log("user",user)
+				if(resps.uid === user.user.uid){
+					console.log("found")
+					found = true
+				}
+			});
+			
+			found ? res.json({val: true}) : res.json({val: false})
+			console.log("resppss",responses)
+		},res)
+	}
+	catch{
+		console.log("error occured",err)
+	}
+	
+}
+
 
 const getResponses = (obj, res) => {
 	withDB(async (db) => {
@@ -324,6 +350,7 @@ module.exports.withDB = withDB
 module.exports.updateQuiz = updateQuiz
 module.exports.createUser = createUser
 module.exports.getUser = getUser
+module.exports.getModals = getModals
 module.exports.createQuiz = createQuiz
 module.exports.submitQuiz = submitQuiz
 module.exports.getResponses = getResponses

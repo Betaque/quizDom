@@ -185,9 +185,16 @@ Router.get('/responses/:quizid/:uid', (req,res) =>{
 	DB.getQuizResponse(quizid,uid,res)
 })
 Router.get('/remaining_time', (req,res) =>{
-	let time = {"minute": 1 , "seconds": 0}
+	let time = {"minute": 1, "seconds": 0}
 	timer.evaluate(time)
 	res.json({time})
+})
+
+Router.post('/modals', (req,res) =>{
+	const {user,qid} = req.body
+	console.log("Something is going to happen soon!!!")
+	console.log(user,qid)
+	DB.getModals(user,qid,res)
 })
 
 Router.get("/gettime", (req,res) =>{

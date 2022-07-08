@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link , Redirect} from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import AttemptedModal from './AttemptedModal'
@@ -18,6 +18,7 @@ const AttemptQuiz = ({ match }) => {
 	const [quizTitle, setQuizTitle] = useState('')
 	const [loading, setLoading] = useState(true)
 	const [result, setResult] = useState({})
+	const [redirect,setRedirect] = useState(false)
 	const [showModal, setShowModal] = useState(false)
 	const uid = firebase.auth().currentUser.uid
 	// const [quizStatus, setQuizStatus] = useState(false)
@@ -27,42 +28,54 @@ const AttemptQuiz = ({ match }) => {
   	const [workMinutes, setWorkMinutes] = useState(1);
 
 	useEffect(() => {
-		const fetchQuiz = async () => {
-			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
-				method: 'POST',
-				body: JSON.stringify({ quizId: quizCode, uid }),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			const quizData = await res.json()
-			console.log("quizData",quizData)
-			setLoading(false)
-			if (quizData.error) {setQuizTitle(quizData.error)}
-			else {
-				setQuizTitle(quizData.title)
-				setQuestions(quizData.questions)
-				const temp = quizData.questions.map((question) => {
-					return {
-						id: question.id,
-						title: question.title,
-						optionType: question.optionType,
-						selectedOptions: [],
-					}
+		
+			const fetchQuiz = async () => {
+				const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
+					method: 'POST',
+					body: JSON.stringify({ quizId: quizCode, uid }),
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				})
-				setAttemptedQuestions(temp)
+				const quizData = await res.json()
+				console.log("quizData",quizData)
+				setLoading(false)
+				if (quizData.error) {setQuizTitle(quizData.error)}
+				else {
+					setQuizTitle(quizData.title)
+					setQuestions(quizData.questions)
+					const temp = quizData.questions.map((question) => {
+						return {
+							id: question.id,
+							title: question.title,
+							optionType: question.optionType,
+							selectedOptions: [],
+						}
+					})
+					console.log("temp",temp)
+					setAttemptedQuestions(temp)
+				}
 			}
-		}
-		fetchQuiz()
+			fetchQuiz()
+		
+		
 	}, [quizCode, uid])
 
+	// const checkBtn = () =>{
+	// 	if(submitted){
+	// 		return true
+	// 	}
+	// 	return false
+	// }
 
 	
-	console.log("a",attemptedQuestions)
+	if(redirect) return <Redirect push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
+
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
+		// e.preventDefault()
+		console.log("Enteredd the submission")
 		try {
-			// console.log("jii")
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/submit`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -75,13 +88,16 @@ const AttemptQuiz = ({ match }) => {
 				},
 			})
 			const body = await res.json()
-			setResult(body)
-			setShowModal(true)
+			// setResult(body)
+			// setShowModal(true)
 			console.log('res body : ', body)
+			setRedirect(true)
+			
 		} catch (e) {
 			console.log('Error Submitting quiz', e)
 		}
 	}
+
 
 	if (loading) return <LoadingScreen />
 
@@ -149,20 +165,22 @@ const AttemptQuiz = ({ match }) => {
 						workMinutes,
 						setWorkMinutes
 					}}>
-						{showSettings ? <Settings /> : <Timer />}
+						{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submitQuiz() : ''} />}
 					</SettingsContext.Provider>
 					</div>
 					{questions.map((question, index) => (
 						<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} />
 					))}
-					<button className='button wd-200' onClick={submitQuiz}>
+					<button className='button wd-200' onClick={submitQuiz} 
+					// disabled={checkBtn()}
+					>
 						Submit
 					</button>
-					<AttemptedModal
+					{/* <AttemptedModal
 						result={result}
 						showModal={showModal}
 						totalScore={questions.length}
-					/>
+					/> */}
 				</div>
 			</div>
 		)

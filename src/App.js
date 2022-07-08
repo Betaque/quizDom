@@ -20,6 +20,7 @@ import Responses from './screens/Responses'
 import ShowResponses from './screens/ShowResponse'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
 import CurrentUser from './firebase/currentUser'
+import AttemptedModal from './screens/AttemptedModal'
 require('dotenv').config()
 
 const App = () => {
@@ -27,14 +28,13 @@ const App = () => {
 	useEffect(() => {
 		const createUserInDB = async () => {
 			if (user.uid)
-			console.log(user)
+			console.log("user",firebase.auth().currentUser.metadata)
 				if (
-					firebase.auth().currentUser.metadata.lastSignInTime ===
-					firebase.auth().currentUser.metadata.creationTime
+					firebase.auth().currentUser.metadata.lastSignInTime === firebase.auth().currentUser.metadata.creationTime
 				) {
 					try {
 						let data = {uid:user.uid, name: user.name , email: user.email}
-						axios.post(`${process.env.REACT_APP_HOST}/API/users/create`, data)
+						await axios.post(`${process.env.REACT_APP_HOST}/API/users/create`, data)
 						.then((response => console.log("response",response)))
 						
 						// await fetch(`${process.env.REACT_APP_HOST}/API/users/create`, {
@@ -86,6 +86,9 @@ const App = () => {
 						/>
 						<Route path='/join-quiz'>
 							<JoinQuiz user={user} />
+						</Route>
+						<Route path='/result/:qid'>
+							<AttemptedModal user={user}/>
 						</Route>
 						<Route path='/attempt-quiz/:quizCode' component={AttemptQuiz} />
 						<Route

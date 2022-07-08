@@ -13,9 +13,11 @@ const evaluate = (time) =>{
         console.log('')
         console.log(secondsLeft)
         sendTimeLeft = secondsLeft
+        // console.log("quiz",Quiz)
         if(secondsLeft == 0) {
             clearInterval(sleft)
             console.log("done")
+            return true
         }
     },1000)
     console.log(sleft)

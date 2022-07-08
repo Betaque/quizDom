@@ -6,13 +6,13 @@ import SettingsContext from "./SettingsContext";
 import axios from 'axios';
 // import axios from "axios";
 
-function Timer() {
+function Timer(props) {
   let workMinutes = 1
   const remainingTime = "http://localhost:8000/API/quizzes/remaining_time"
   const currentTime = "http://localhost:8000/API/quizzes/gettime"
-  
   const settingsInfo = useContext(SettingsContext);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [submission, setSubmission] = useState(false)
 
 
   const secondsLeftRef = useRef(secondsLeft);
@@ -46,26 +46,31 @@ function Timer() {
   }
 
   
-  useEffect(async() => {
-    if(localStorage.getItem("count_timer")){
-      let cval = await current_time()
-      console.log("current",cval)
-      localStorage.setItem("count_timer",cval);
-      secondsLeftRef.current = localStorage.getItem("count_timer");
-
-    } else {
-      let rval = await remaining_time()
-      console.log("rval",rval)
-      secondsLeftRef.current = rval * 60;
-      console.log("secondsLeft",secondsLeftRef.current)
+  useEffect(() => {
+    const run = async () =>{
+      if(localStorage.getItem("count_timer")){
+        let cval = await current_time()
+        console.log("current",cval)
+        localStorage.setItem("count_timer",cval);
+        secondsLeftRef.current = localStorage.getItem("count_timer");
+  
+      } else {
+        let rval = await remaining_time()
+        console.log("rval",rval)
+        secondsLeftRef.current = rval * 60;
+        console.log("secondsLeft",secondsLeftRef.current)
+      }
     }
+    run()
+    
 
     setSecondsLeft(secondsLeftRef.current);
     
     const interval = setInterval(() => {
-      if (secondsLeftRef.current === 0) {
+      if (secondsLeftRef.current <= 0) {
         console.log("Completed")
         localStorage.clear("count_timer");
+        setSubmission(true)
         return clearInterval(interval)
       }
 
@@ -75,40 +80,6 @@ function Timer() {
     
   }, [workMinutes]);
 
-  // useEffect(() => {
-  //   // if(localStorage.getItem("count_timer")){
-  //   //   console.log("clearing")
-  //   //   secondsLeftRef.current = localStorage.getItem("count_timer");
-  //   // } else {
-  //   //   secondsLeftRef.current = settingsInfo.workMinutes * 60;
-  //   //   console.log("updating",secondsLeftRef.current)
-  //   // }
-  //         secondsLeftRef.current = settingsInfo.workMinutes * 60;
-
-  //   setSecondsLeft(secondsLeftRef.current);
-    
-  //   const interval = setInterval(() => {
-  //     if (secondsLeftRef.current === 0) {
-  //       console.log("Completed")
-  //       localStorage.clear();
-  //       clearInterval(interval)
-  //     }
-  //     tick();
-  //   },1000);
-  // }, [settingsInfo]);
-
-  // console.log(secondsLeft)
-  
-  // const setTime = () =>{
-  //   setMode(true)
-  // }
-  // const getTime = () =>{
-  //   axios.get("http://localhost:8000/API/quizzes/remaining_time")
-  //   .then((res) =>{
-  //     // setTime
-  //     console.log("resss",res)
-  //   })
-  // }
 
   const totalSeconds = settingsInfo.workMinutes * 60;
   const percentage = Math.round(secondsLeft / totalSeconds * 100);
@@ -116,17 +87,25 @@ function Timer() {
   let seconds = secondsLeft % 60;
   if(seconds < 10) seconds = '0'+seconds;
 
-  return (
-    <div>
-      <CircularProgressbar
-        value={percentage}
-        text={minutes + ':' + seconds}
-        styles={buildStyles({
-        textColor:'#000',
-        tailColor:'rgba(255,255,255,.2)',
-      })} />
-    </div>
-  );
+  if(!submission){
+    return (
+      <div>
+        <CircularProgressbar
+          value={percentage}
+          text={minutes + ':' + seconds}
+          styles={buildStyles({
+          textColor:'#000',
+          tailColor:'rgba(255,255,255,.2)',
+        })} />
+      </div>
+    );
+  }
+  else{
+    props.handleChild(true)
+    return null
+  }
+  
+  
 }
 
 export default Timer;
@@ -248,3 +227,37 @@ export default Timer;
 
 // export default Timer;
 
+// useEffect(() => {
+  //   // if(localStorage.getItem("count_timer")){
+  //   //   console.log("clearing")
+  //   //   secondsLeftRef.current = localStorage.getItem("count_timer");
+  //   // } else {
+  //   //   secondsLeftRef.current = settingsInfo.workMinutes * 60;
+  //   //   console.log("updating",secondsLeftRef.current)
+  //   // }
+  //         secondsLeftRef.current = settingsInfo.workMinutes * 60;
+
+  //   setSecondsLeft(secondsLeftRef.current);
+    
+  //   const interval = setInterval(() => {
+  //     if (secondsLeftRef.current === 0) {
+  //       console.log("Completed")
+  //       localStorage.clear();
+  //       clearInterval(interval)
+  //     }
+  //     tick();
+  //   },1000);
+  // }, [settingsInfo]);
+
+  // console.log(secondsLeft)
+  
+  // const setTime = () =>{
+  //   setMode(true)
+  // }
+  // const getTime = () =>{
+  //   axios.get("http://localhost:8000/API/quizzes/remaining_time")
+  //   .then((res) =>{
+  //     // setTime
+  //     console.log("resss",res)
+  //   })
+  // }

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { Link , useParams} from "react-router-dom"
-import axios from "axios"
+import { Link } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -27,37 +26,14 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "flex-end",
 	},
 }))
-// { result, totalScore, showModal }
-const AttemptedModal = (user) => {
+
+const AttemptedModal = ({ result, totalScore, showModal }) => {
 	const classes = useStyles()
-	const params = useParams()
-	const {qid} = params
-	const [text,setText] = useState('')
-	// const [open, setOpen] = useState(showModal)
+	const [open, setOpen] = useState(showModal)
 
 	useEffect(() => {
-		const getInfo = async () =>{
-			try{
-				const modal = await axios.post(`${process.env.REACT_APP_HOST}/API/quizzes/modals`,{user,qid})
-				console.log(modal.data.val)
-				let checking = modal.data.val
-				if(checking){
-					setText("Your quiz have been submitted Successfully !!!")
-				}
-				else{
-					setText("Some error occurred!!!")
-				}
-			}
-			catch{
-				console.log("errorr")
-			}
-			
-		}
-		console.log("userrrrrr",user)
-		console.log("Match", qid)
-		getInfo()
-		// setOpen(showModal)
-	}, [qid,user])
+		setOpen(showModal)
+	}, [showModal])
 
 	return (
 		<div className={classes.root}>
@@ -65,18 +41,15 @@ const AttemptedModal = (user) => {
 				aria-labelledby="transition-modal-title"
 				aria-describedby="transition-modal-description"
 				className={classes.modal}
-				// open={open}
-				open={true}
+				open={open}
 				disableEnforceFocus={true}
 			>
 				<div className={classes.paper}>
 					<h2>Quiz Attempted Successfully.</h2>
 					<h1 className="score_h2">
-						{/* {"Almost there"} */}
-						{text}
-						{/* {result.error
+						{result.error
 							? "Not Submitted ! "
-							: ''} */}
+							: `Score: ${result.score}/${totalScore}`}
 					</h1>
 					<Link to={"/dashboard"}>
 						<button className="button wd-200">Dashboard</button>
