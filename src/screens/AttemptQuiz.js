@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Link , Redirect} from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
-import AttemptedModal from './AttemptedModal'
+// import AttemptedModal from './AttemptedModal'
 import Timer from "../components/Timer";
 import Settings from "../components/Settings";
 import SettingsContext from "../components/SettingsContext";
 import QuestionCard from "../components/QuestionCard"
-// import SubmitTime from "../components/SubmitTime"
+
 require('dotenv').config()
 
 
@@ -17,65 +17,71 @@ const AttemptQuiz = ({ match }) => {
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')
 	const [loading, setLoading] = useState(true)
-	const [result, setResult] = useState({})
+	const [active,setActive] = useState(false)
+	// const [submission, setSubmission] = useState(false)
+	// const [result, setResult] = useState({})
 	const [redirect,setRedirect] = useState(false)
-	const [showModal, setShowModal] = useState(false)
+	// const [showModal, setShowModal] = useState(false)
 	const uid = firebase.auth().currentUser.uid
 	// const [quizStatus, setQuizStatus] = useState(false)
-	const [timer,setTimer] = useState(true)
+	// const [timer,setTimer] = useState(true)
 	const [showSettings, setShowSettings] = useState(false);
 	// setting the exam time
   	const [workMinutes, setWorkMinutes] = useState(1);
+	// let submission = false
 
 	useEffect(() => {
-		
-			const fetchQuiz = async () => {
-				const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
-					method: 'POST',
-					body: JSON.stringify({ quizId: quizCode, uid }),
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				})
-				const quizData = await res.json()
-				console.log("quizData",quizData)
-				setLoading(false)
-				if (quizData.error) {setQuizTitle(quizData.error)}
-				else {
-					setQuizTitle(quizData.title)
-					setQuestions(quizData.questions)
-					const temp = quizData.questions.map((question) => {
-						return {
-							id: question.id,
-							title: question.title,
-							optionType: question.optionType,
-							selectedOptions: [],
-						}
+			try{
+				const fetchQuiz = async () => {
+					const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
+						method: 'POST',
+						body: JSON.stringify({ quizId: quizCode, uid }),
+						headers: {
+							'Content-Type': 'application/json',
+						},
 					})
-					console.log("temp",temp)
-					setAttemptedQuestions(temp)
+					const quizData = await res.json()
+					console.log("quizData",quizData)
+					setLoading(false)
+					if (quizData.error) {
+						console.log("errrorrr")
+						setQuizTitle(quizData.error)
+					}
+					else {
+						setActive(true)
+						setQuizTitle(quizData.title)
+						setQuestions(quizData.questions)
+						const temp = quizData.questions.map((question) => {
+							return {
+								id: question.id,
+								title: question.title,
+								optionType: question.optionType,
+								selectedOptions: [],
+							}
+						})
+						console.log("temp",temp)
+						setAttemptedQuestions(temp)
+					}
 				}
+				fetchQuiz()
 			}
-			fetchQuiz()
+			catch{
+				console.log("Error in fetchQuiz")
+			}
 		
 		
 	}, [quizCode, uid])
 
-	// const checkBtn = () =>{
-	// 	if(submitted){
-	// 		return true
-	// 	}
-	// 	return false
-	// }
+	// console.log("quizTime",quizTime)
 
-	
+
 	if(redirect) return <Redirect push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
 
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
-		// e.preventDefault()
 		console.log("Enteredd the submission")
 		try {
+			setActive(true)
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/submit`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -98,12 +104,17 @@ const AttemptQuiz = ({ match }) => {
 		}
 	}
 
+	// const quizSubmission = () =>{
+	// 	console.log("ENtered the submission")
+	// 	submission = true
+	// 	console.log(submission)
+	// }
+
 
 	if (loading) return <LoadingScreen />
 
 	// For Quiz not Found
-	if (quizTitle === 'ERR:QUIZ_NOT_FOUND'){
-		setTimer(false)
+	if (quizTitle === 'ERR:QUIZ_NOT_FOUND')
 		return (
 			<div className='loading'>
 				<h1>404 Quiz Not Found!</h1>
@@ -115,11 +126,10 @@ const AttemptQuiz = ({ match }) => {
 				</h3>
 			</div>
 		)
-	}
+	
 		
 	// For Quiz not accessible
-	else if (quizTitle === 'ERR:QUIZ_ACCESS_DENIED'){
-		setTimer(false)
+	else if (quizTitle === 'ERR:QUIZ_ACCESS_DENIED')
 		return (
 			<div className='loading'>
 				<h2>
@@ -134,11 +144,8 @@ const AttemptQuiz = ({ match }) => {
 				</h3>
 			</div>
 		)
-	}
 		
-	else if (quizTitle === 'ERR:QUIZ_ALREADY_ATTEMPTED')
-		{
-			setTimer(false)
+	else if (quizTitle === 'ERR:QUIZ_ALREADY_ATTEMPTED')		
 			return (
 				<div className='loading'>
 					<h2>You have already taken the Quiz.</h2>
@@ -150,39 +157,50 @@ const AttemptQuiz = ({ match }) => {
 					</h3>
 				</div>
 			)
-		}
+		
 	else
 		return (
-			<div id='main-body'>
-				<div id='create-quiz-body'>
-					<div className='quiz-header'>
-						<h2>{quizTitle}</h2>
+			<>
+				{
+					active ? 
+					<div id='main-body'>
+						<div id='create-quiz-body'>
+							<div className='quiz-header'>
+								<h2>{quizTitle}</h2>
+							</div>
+						<div>
+							<SettingsContext.Provider value={{
+								showSettings,
+								setShowSettings,
+								workMinutes,
+								setWorkMinutes
+							}}>
+
+								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submitQuiz() : ''} />}
+
+							</SettingsContext.Provider>
+							</div>
+							{questions.map((question, index) => (
+								<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} />
+							))}
+							{/* <button onChange={submitQuiz} value={submission}  style={{display: "none"}}></button> */}
+							<button className='button wd-200' onClick={submitQuiz} 
+							// disabled={checkBtn()}
+							>
+								Submit
+							</button>
+							{/* <AttemptedModal
+								result={result}
+								showModal={showModal}
+								totalScore={questions.length}
+							/> */}
+						</div>
 					</div>
-				<div>
-					<SettingsContext.Provider value={{
-						showSettings,
-						setShowSettings,
-						workMinutes,
-						setWorkMinutes
-					}}>
-						{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submitQuiz() : ''} />}
-					</SettingsContext.Provider>
-					</div>
-					{questions.map((question, index) => (
-						<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} />
-					))}
-					<button className='button wd-200' onClick={submitQuiz} 
-					// disabled={checkBtn()}
-					>
-						Submit
-					</button>
-					{/* <AttemptedModal
-						result={result}
-						showModal={showModal}
-						totalScore={questions.length}
-					/> */}
-				</div>
-			</div>
+					: ''
+				}
+			</>
+			
+			
 		)
 }
 

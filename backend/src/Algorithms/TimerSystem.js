@@ -20,7 +20,7 @@ const evaluate = (time) =>{
             return true
         }
     },1000)
-    console.log(sleft)
+    // console.log(sleft)
 }
 
 const sendTime = () =>{
