@@ -356,7 +356,7 @@ export default function QuestionsTable({ questionArray, setQuestionArray }) {
                       </TableCell>
                       <TableCell align="right">{row.options.length}</TableCell>
                       <TableCell align="right">
-                        {row.choice === "radio" ? "Single" : "Multiple"}
+                        { row.choice !== "text" ? row.choice === "radio" ? "Single" : "Multiple" : "Text"}
                       </TableCell>
                       <TableCell align="right">
                         <AddQuestionModal

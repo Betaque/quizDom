@@ -176,7 +176,7 @@ const AttemptQuiz = ({ match }) => {
 								setWorkMinutes
 							}}>
 
-								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submitQuiz() : ''} />}
+								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? "submitQuiz()" : ''} />}
 
 							</SettingsContext.Provider>
 							</div>

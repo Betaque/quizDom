@@ -85,6 +85,18 @@ createQuiz = async (quiz, res) => {
 	}
 }
 
+// const updateText = async (updateText, res) =>{
+// 	withDB(async(db) =>{
+// 		try{
+
+// 		}
+// 		catch{
+// 			console.log("Error Submitting the text!")
+// 		}
+// 	})
+// }
+
+
 const updateQuiz = async (updatedQuiz,res) =>{
 	withDB(async (db) => {
 		try {
@@ -105,27 +117,18 @@ const updateQuiz = async (updatedQuiz,res) =>{
 				})
 			}
 			console.log("updatedQuiz",updatedQuiz)
-			console.log("optionsId",updatedQuiz.optionId)
+			// console.log("optionsId",updatedQuiz.optionId)
 			const id = updatedQuiz.questions.id
 			const optionId = updatedQuiz.optionId
 			
 			const sop = updatedQuiz.questions.selectedOptions
-			// console.log("vvv",id,sop)
 			const reply = [{"id":id,"selectedOp":sop, "optionId": optionId}]
-			// console.log("reply",reply)
-			// console.log("updaQuiz",updatedQuiz.questions)
-			// 629f65ab2560ba321cf691c0
 			const vid = await db.collection('responses').find({_id:updatedQuiz.quizId})
-			// console.log(vid)
 			const quiz = await vid.toArray()
-			// console.log("length",quiz[0])
-			// const vid = await db.collection('responses').find({_id:"629f65ab2560ba321cf691c1"})
+			console.log("length",quiz[0])
 			if(quiz[0] != undefined){
-				const quiz = await vid.toArray()
-				// console.log("length",quiz[0])
-				// console.log("r",quiz[0].responses)
+				console.log("rrrrrrrr",quiz[0])
 				const arrayResponses = quiz[0].responses
-				// console.log("aresp",updatedQuiz.questions.id)
 				function checkId(resp){
 					let item = resp.map((resps) => {
 						if(resps.id == updatedQuiz.questions.id){
@@ -134,10 +137,9 @@ const updateQuiz = async (updatedQuiz,res) =>{
 						}
 					}).filter(function(resps){return resps;})[0];
 					return item
-					
 				}
 				const returnedVal = checkId(arrayResponses);
-				// console.log("rvalll",returnedVal)
+				console.log("Returned Val",returnedVal)
 				if(returnedVal){
 					let i=0
 					console.log("This question exists")
@@ -158,6 +160,9 @@ const updateQuiz = async (updatedQuiz,res) =>{
 								}
 							) 
 							let reply = {"id":id,"selectedOp":sop, "optionId": optionId}
+							if(updatedQuiz.opType === 'text'){
+								reply = {"id":id,"textAns": updatedQuiz.message}
+							}
 							console.log("rrrr",reply)
 							await db.collection('responses').updateOne(
 								{ 
@@ -172,9 +177,9 @@ const updateQuiz = async (updatedQuiz,res) =>{
 
 				}else{
 					let reply = {"id":id,"selectedOp":sop, "optionId": optionId}
-					console.log("This question does not exists")
-					console.log("iddddddddd",updatedQuiz.questions.id)
-					console.log("replyyyy",reply)
+					if(updatedQuiz.opType === 'text'){
+						reply = {"id":id,"textAns": updatedQuiz.message}
+					}
 					await db.collection('responses').updateOne(
 						{ 
 							_id: updatedQuiz.quizId,
