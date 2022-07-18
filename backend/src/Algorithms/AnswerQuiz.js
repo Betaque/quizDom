@@ -1,6 +1,3 @@
-
-
-
 const AnswerQuiz = (quizQuestions, attemptedQuestions) => {
     // vals.forEach((val)=>{
     //     console.log("val",val.selectedOptions)

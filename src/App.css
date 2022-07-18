@@ -136,6 +136,42 @@ input[type='submit'],
 	margin-top: 50px;
 	padding: 5%;
 }
+.textOption{
+	display: flex;
+	flex-direction: column;
+}
+.textOption textarea{
+	border-radius: 10px;
+	/* box-shadow: var(--light-shadow) 1px 1px 1px 1px; */
+	min-height: 25vh;
+	margin-top: 10px;
+}
+.textOption textarea:focus-visible{
+	outline: var(--light-shadow) 1px 1px 1px 1px;
+}
+.textOption .textBtn{
+	max-width: 120px;
+	display: inline-block;
+	margin: 10px;
+	padding: 15px;
+	font-size: 15px;
+	text-transform: uppercase;
+	transition: 0.5s;
+	background-size: 200% auto;
+	border-radius: 50px;
+	border: none;
+	background-image: var(--gradient);
+	color: var(--primary);
+    border: none;
+    background-image: var(--gradient);
+    color: var(--primary);
+}
+.textOption .textBtn:hover{
+	background-position: right center; /* change the direction of the change here */
+	color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+}
 .response-table {
 	width: 100%;
 	border: 1px solid var(--secondary);

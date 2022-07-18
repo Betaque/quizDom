@@ -65,32 +65,41 @@ export default function AddQuestionModal({
 	}
 	const addQuestionCallBack = () => {
 		const tempArr = [...optionsArray]
-		if (optionsRef.current.value.length !== 0) {
-			// For radio options, set all other options incorrect
-			if (optionType === 'radio' && checkBoxRef.current.checked)
-				tempArr.forEach((op) => (op.isCorrect = false))
-
-			tempArr.push({
-				text: optionsRef.current.value,
-				isCorrect: checkBoxRef.current.checked,
-			})
+		if(optionType != 'text') {
+			if (optionsRef.current.value.length !== 0) {
+				// For radio options, set all other options incorrect
+				if (optionType === 'radio' && checkBoxRef.current.checked)
+					tempArr.forEach((op) => (op.isCorrect = false))
+	
+				tempArr.push({
+					text: optionsRef.current.value,
+					isCorrect: checkBoxRef.current.checked,
+				})
+			}
+			// Error Handling
+			if (!titleField.length && optionsArray.length < 2) {
+				alert('Please add Question and atleast 2 options.')
+				return
+			} else if (!titleField.length) {
+				alert('Please add Question.')
+				return
+			} else if (optionsArray.length < 2) {
+				alert('Number of Options must be greater than 1.')
+				return
+			}
+			const correctOp = optionsArray.filter((op) => op.isCorrect)
+			if (correctOp.length < 1) {
+				alert('No correct option was selected.')
+				return
+			}
 		}
-		// Error Handling
-		if (!titleField.length && optionsArray.length < 2) {
-			alert('Please add Question and atleast 2 options.')
-			return
-		} else if (!titleField.length) {
+
+		if (!titleField.length) {
 			alert('Please add Question.')
 			return
-		} else if (optionsArray.length < 2) {
-			alert('Number of Options must be greater than 1.')
-			return
 		}
-		const correctOp = optionsArray.filter((op) => op.isCorrect)
-		if (correctOp.length < 1) {
-			alert('No correct option was selected.')
-			return
-		}
+		
+		
 		if (index !== -1) addQuestionHandle(titleField, optionType, tempArr, index)
 		else addQuestionHandle(titleField, optionType, tempArr)
 
@@ -98,7 +107,7 @@ export default function AddQuestionModal({
 	}
 
 	const addOption = () => {
-		if (optionsRef.current.value.length === 0) return
+		if(optionType != 'text') if (optionsRef.current.value.length === 0) return
 
 		const arr = [...optionsArray]
 		if (
@@ -121,6 +130,8 @@ export default function AddQuestionModal({
 		setOptionsArray(arr)
 	}
 	const handleTypeChange = (e) => setOptionType(e.target.value)
+
+	console.log("option type",optionType)
 
 	const deleteHandler = (ind) => {
 		const temp = [...optionsArray]
@@ -183,6 +194,9 @@ export default function AddQuestionModal({
 							<option className='selectOp' value='check'>
 								Multiple Answers
 							</option>
+							<option className='selectOp' value='text'>
+								Text Answer
+							</option>
 						</select>
 
 						<div className='option-div'>
@@ -231,6 +245,16 @@ export default function AddQuestionModal({
 
 						<div className='add-op'>
 							<div>
+
+								{
+									optionType === 'text' ?
+									<input
+										type={'text'}
+										ref={checkBoxRef}
+										className='input-text op-text'
+										name='option'
+								/> : 
+								<>
 								<input
 									type={optionType === 'radio' ? 'radio' : 'checkbox'}
 									ref={checkBoxRef}
@@ -243,13 +267,21 @@ export default function AddQuestionModal({
 									className='input-text op-text'
 									placeholder={`Option ${optionsArray.length + 1}`}
 								/>
+								</>
+								
+								}
+								
 							</div>
-							<input
-								type='submit'
-								className='add-btn'
-								value='+ Add'
-								onClick={addOption}
-							/>
+							{
+								optionType != 'text' ? 
+								<input
+									type='submit'
+									className='add-btn'
+									value='+ Add'
+									onClick={addOption}
+							/> : ''
+							}
+							
 						</div>
 					</div>
 					<div className={classes.buttons}>

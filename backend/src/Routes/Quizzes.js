@@ -123,6 +123,11 @@ Router.post('/submit', (req, res) => {
 
 Router.post('/update', (req,res) =>{
 	const update = req.body
+	// if(update.opType === 'text'){
+	// 	console.log("update text")
+	// 	DB.updateText(update, res)
+	// 	return null
+	// }
 	console.log("update",update)
 	DB.updateQuiz(update, res)
 })
