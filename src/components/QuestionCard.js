@@ -20,6 +20,7 @@ const QuestionCard = (props) =>{
 					},
 				})
 				const data = await res.json()
+				console.log("data in fetch",data)
 				let arr = []
 				if(!data.error){
 					data.forEach((element) => {
@@ -28,6 +29,7 @@ const QuestionCard = (props) =>{
 		
 					setqResps(arr)
 				}
+				console.log("qresps",qResps)
 				
 			}
 			fetchResponses()
@@ -153,7 +155,6 @@ const QuestionCard = (props) =>{
 			<div id='title'>{question.title}</div>
 			<div className='option-div'>
 				{
-				
 					question.optionType === 'text' ? 
 					<div className='textOption'>
 						<textarea type="text"

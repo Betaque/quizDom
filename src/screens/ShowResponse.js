@@ -1,4 +1,5 @@
 import React , { useEffect,useState } from 'react'
+import ResponseQuestionCard from '../components/ResponseQuestionCard'
 // import { useLocation } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
@@ -7,14 +8,6 @@ require('dotenv').config()
 
 
 const ShowQuiz = ({ match }) => {
-	// const location = useLocation()
-	// const from = location.state.from
-	// console.log("from",from)
-	// useEffect(() =>{
-	// 	fetch('http://localhost:8000/API/quizzes/responses/6298baaaf056871b988a586d/z6c7y5wUSZM4iPohVfrvII5EuTk2')
-	// 	.then(response => console.log("Res from show response",response.json()))
-	// 	// console.log("Res from show response",res)
-	// })
 	const quizCode = match.params.quizid
 	const userCode = match.params.uid
 	const [questions, setQuestions] = useState([])
@@ -23,13 +16,12 @@ const ShowQuiz = ({ match }) => {
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
 	const uid = firebase.auth().currentUser.uid
 	const [loading, setLoading] = useState(true)
-	const [selectedOptions, setSelectedOptions] = useState([])
+    const [selectedOptions, setSelectedOptions] = useState([])
 
 
 
 
 	useEffect(() => {
-		//629df8f2969c4e06907dc706/z6c7y5wUSZM4iPohVfrvII5EuTk2
 
 		// Fetching the Student Details
 		const getResponses = async () => {
@@ -54,7 +46,7 @@ const ShowQuiz = ({ match }) => {
 					method: 'GET'
 				})
 				const quizData = await res.json()
-				console.log("quizData",quizData)
+				console.log("quizDataaaa",quizData)
 				// setLoading(false)
 				if (quizData.error) console.log("quizData.error",quizData.error)
 				// setQuizTitle(quizData.error)
@@ -63,9 +55,11 @@ const ShowQuiz = ({ match }) => {
 						return {
 								id: question.id,
 								selectedOp: question.selectedOp,
-								optionId: question.optionId
+								optionId: question.optionId,
+								textAns: question.textAns
 							}
 						})
+						console.log("temp",temp)
 					setSelectedOptions(temp)
 				}
 			}
@@ -82,11 +76,13 @@ const ShowQuiz = ({ match }) => {
 			})
 
 			const quizData = await res.json()
+			console.log("quizData for the questions",quizData)
 			setLoading(false)
 			if (quizData.error) setQuizTitle(quizData.error)
 			else {
 				setQuizTitle(quizData.title)
 				setQuestions(quizData.questions)
+				console.log(questions)
 				const temp = quizData.questions.map((question) => {
 					return {
 						id: question.id,
@@ -103,22 +99,7 @@ const ShowQuiz = ({ match }) => {
 		console.log("final response",responses)
 		}, [quizCode, userCode, uid])
 
-
-		const getClass = (val,qindex) => {
-			let checking = val.isCorrect
-			for(let i = 0; i<selectedOptions.length ; i++){
-
-				if(qindex === selectedOptions[i].id){
-					if(val.id === selectedOptions[i].optionId){
-						return (checking === "true" ? 'label green bold' : 'label red bold')
-					}
-					else{
-						return (checking === "true" ? 'label green': 'label red')
-					}
-
-				}
-			}
-		}
+		console.log("questions",questions)
 	
 	if (loading) return <LoadingScreen />
 		return (
@@ -126,38 +107,14 @@ const ShowQuiz = ({ match }) => {
 				<div id='create-quiz-body'>
 					<div className='quiz-header'>
 						<h2>{quizTitle}</h2>
-						<div className='name'>
+						{/* <div className='name'>
 								<p><strong>Name: {responses[0].name}</strong></p>
 								<p><strong>Score: {responses[0].score}</strong></p>
-							</div>
+							</div> */}
 					</div>
 					{questions.map((question, index) => (
-						<div className='attempQuestionCard' key={index}>
-							<div id='title'>{question.title}</div>
-							<div className='option-div'>
-								{question.options.map((option, ind) => (
-									<div className='option' key={ind}>
-										{question.optionType === 'radio' ? (
-											<input
-												type='radio'
-												name={`option${index}`}
-												disabled
-											/>
-										) : (
-											<input
-												type='checkbox'
-												name='option'
-												disabled
-											/>
-										)}
-										<label className={getClass(option,question.id)} style={{ padding: '0px 5px' }}>
-											{option.text}
-										</label>
-									</div>
-								))}
-							</div>
-						</div>
-					))}
+								<ResponseQuestionCard question={question} index={index} quizCode={quizCode} selectedOptions={selectedOptions} userCode={userCode} />
+							))}
 				</div>
 			</div>
 		)
