@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import './OneTimeDashboard.css'
 require('dotenv').config()
 
@@ -10,7 +10,7 @@ const OneTimeDashboard = ({ user }) => {
 	const onCreateQuiz = () => setPath('/create-quiz')
 	const onJoinQuiz = () => setPath('/join-quiz')
 
-	if (path.length > 0) return <Redirect push to={path} />
+	if (path.length > 0) return <Navigate push to={path} />
 
 	return (
 		<div className='one-time-dashboard'>

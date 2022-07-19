@@ -20,7 +20,10 @@ const QuestionCard = (props) =>{
 					},
 				})
 				const data = await res.json()
-				console.log("data in fetch",data)
+				// console.log("data in fetch",data)
+				// if(data[0].textAns){
+				// 	setMessage(data[0].textAns)
+				// }
 				let arr = []
 				if(!data.error){
 					data.forEach((element) => {
@@ -29,7 +32,7 @@ const QuestionCard = (props) =>{
 		
 					setqResps(arr)
 				}
-				console.log("qresps",qResps)
+				// console.log("qresps",qResps)
 				
 			}
 			fetchResponses()
@@ -43,17 +46,11 @@ const QuestionCard = (props) =>{
 
 
     const handleOptionChecked = (option, index,id) =>{
-		// console.log("ocheck",option,id)
-		// console.log("ops",ops)
 		let selected = false
-		// console.log("qresps",qResps)
 		qResps.forEach((op) =>{
-			// console.log("Optsss",op)
 			if(op.id === id){
-				// console.log(op.id,id)
 				op.selectedOp.forEach((ops) =>{
 					if(ops === option){
-						// console.log("Selected Options Match", ops,option)
 						selected = true
 					}
 				})
@@ -64,7 +61,7 @@ const QuestionCard = (props) =>{
 
 	const handleChange = event => {
 		setMessage(event.target.value);
-	  };
+	};
 
 	const submitText = async(e) =>{
 		console.log("message is", message)
@@ -142,11 +139,12 @@ const QuestionCard = (props) =>{
 		}
 
 	}
-	const clear = (e,option) =>{
-		console.log("e",e)
-		console.log("option",option)
-		setisVal('')
-	}
+
+	// const clear = (e,option) =>{
+	// 	console.log("e",e)
+	// 	console.log("option",option)
+	// 	setisVal('')
+	// }
 
 
 

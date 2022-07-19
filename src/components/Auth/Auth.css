@@ -1,0 +1,94 @@
+.auth-wrapper{
+    position: relative;
+    display: flex;
+    /* align-items: flex-start; */
+    min-height: 100vh;
+    /* padding-bottom: 50px; */
+}
+
+.auth-wrapper .left{
+    /* background-color: palegreen; */
+    background-color: rgb(98,228,174);
+    width: 50%;
+    padding-bottom: 100px;
+    min-height: 100vh;
+    position: relative;
+}
+
+.auth-wrapper .left img{
+    margin-top: auto;
+    margin-bottom: auto;
+    min-width: none;
+}
+
+.auth-wrapper .right{
+    position: relative;
+    padding: 0px 100px;
+    text-align: center;
+    width: calc(50% - 200px);
+    padding-bottom: 50px;
+}
+
+.auth-wrapper .right .header{
+    margin: 50px 0;
+    font-size: 3em;
+    letter-spacing: 1px;
+}
+
+.auth-wrapper .right .sub-header{
+    font-size: 1.5em;
+    color: rrgb(148,148,148);
+}
+
+.auth-wrapper .form{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.auth-wrapper .input{
+    width: 20vw;
+    caret-color: black;
+}
+
+.auth-wrapper .sign-in-wrapper .input-wrapper{
+    padding-top: 50px;
+}
+
+.auth-wrapper .sign-up-wrapper .input-wrapper:first-child{
+    padding-top: 50px;
+}
+
+.auth-wrapper .sign-up-wrapper .input-wrapper{
+    padding-bottom: 30px;
+}
+
+
+.auth-wrapper .input-wrapper .input::placeholder{
+    color: rgb(179, 176, 176);
+}
+
+.auth-wrapper .input-wrapper .input-label{
+    text-align: left;
+}
+
+.auth-wrapper .btn{
+    margin-top: 40px;
+    font-size: 1.1em !important;
+    width: 100% !important;
+}
+
+.auth-wrapper .new{
+    margin-top: 50px;
+    cursor: pointer;
+    color: rgb(148,148,148);
+}
+
+.auth-wrapper .left{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth-wrapper .left-img{
+    width: 60%;
+    height: auto;
+}

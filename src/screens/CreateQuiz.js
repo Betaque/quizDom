@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import './CreateQuiz.css'
 import AddQuestionModal from '../components/AddQuestionModal'
 import QuestionsTable from '../components/QuestionsTable'
@@ -73,7 +73,7 @@ const CreateQuiz = ({
 			setLoading('error')
 		}
 	}
-	if (quizCode) return <Redirect push to={`/created-succesfully/${quizCode}`} />
+	if (quizCode) return <Navigate push to={`/created-succesfully/${quizCode}`} />
 
 	if (loading === 'start') return <LoadingScreen />
 

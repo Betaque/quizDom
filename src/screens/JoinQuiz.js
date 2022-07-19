@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import './JoinQuiz.css'
 
 const JoinQuiz = () => {
@@ -12,7 +12,7 @@ const JoinQuiz = () => {
 	const handleJoinBlindQuiz = () => {
 		if (code.length) setValid('attempt-blind-quiz')
 	}
-	if (valid !== 'false') return <Redirect push to={`/${valid}/${code}`} />
+	if (valid !== 'false') return <Navigate push to={`/${valid}/${code}`} />
 	// if (valid === 'join-blind')
 	// 	return <Redirect push to={`attempt-blind-quiz/${code}`} />
 

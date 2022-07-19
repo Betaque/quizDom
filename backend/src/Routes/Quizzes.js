@@ -98,7 +98,7 @@ Router.post('/fetchResponse', (req,res) =>{
 					.find({ _id: quizId, uid: uid })
 				// console.log("cursor",cursor)
 				const quizData = await cursor.toArray()
-				// console.log("quizDataaaaaaaaaaa",quizData[0].responses)
+				// console.log("qsss",quizData[0].responses)
 				// const cursor2 = db.collection('users').find({
 				// 	$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
 				// })

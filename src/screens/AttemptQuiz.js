@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link , Redirect} from 'react-router-dom'
+import { Link , Navigate} from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 // import AttemptedModal from './AttemptedModal'
@@ -75,7 +75,7 @@ const AttemptQuiz = ({ match }) => {
 	// console.log("quizTime",quizTime)
 
 
-	if(redirect) return <Redirect push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
+	if(redirect) return <Navigate push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
 
 	const submitQuiz = async () => {
 		// send attemped Questions to backend

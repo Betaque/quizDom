@@ -5,7 +5,7 @@ import JoinedQuizCard from '../components/JoinedQuizCard'
 import LoadingScreen from './LoadingScreen'
 import CreateQuiz from './CreateQuiz'
 // import OneTimeDashBoard from './OneTimeDashboard'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 require('dotenv').config()
 
 const UserDashboard = ({ user }) => {
@@ -78,7 +78,7 @@ const UserDashboard = ({ user }) => {
 	if (loading) return <LoadingScreen />
 	
 	const validateRedirection = () =>{
-		return <Redirect exact={process.env.REACT_APP_HOST} />
+		return <Navigate exact={process.env.REACT_APP_HOST} />
 	}
 
 	if (editQuiz.length)

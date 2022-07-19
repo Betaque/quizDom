@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import './Sidebar.css'
 import firebase from '../firebase/firebase'
 import Home from '../screens/Home'
@@ -41,7 +41,7 @@ function Sidebar() {
 	const [sidebar, setSidebar] = useState(false)
 	const [user, setUser] = useState({})
 	const showSidebar = () => setSidebar(!sidebar)
-	if (signOut) return <Redirect to='/' />
+	if (signOut) return <Navigate to='/' />
 
 	
 	return (

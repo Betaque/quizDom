@@ -1,6 +1,7 @@
 const {MongoClient} = require('mongodb')
 const Evaluate = require('../Algorithms/EvaluateQuiz')
 const Answers = require('../Algorithms/AnswerQuiz')
+const { CodeSharp } = require('@material-ui/icons')
 const ObjectId = require('mongodb').ObjectId
 const API_KEY = require('../db-config').database
 let db
@@ -30,8 +31,13 @@ const withDB = async (operations, res) => {
 	}
 }
 
-const createUser = async (uid, name, email, res) => {
+const createUser = async (data,res) => {
 	try{
+		const {firstName , lastName , email , password , createdAt , deleted } = data
+		console.log("creating a user")
+		console.log("data",data._id)
+		const uid = data._id
+		console.log("createUser",data)
 		await withDB(async (db) => {
 			const user = await db.collection('users').findOne({ uid: uid })
 			// console.log(user)
@@ -39,8 +45,12 @@ const createUser = async (uid, name, email, res) => {
 				console.log("Entered creating user")
 				const result = await db.collection('users').insertOne({
 					uid,
-					name,
-					email,
+					firstName , 
+					lastName , 
+					email , 
+					password , 
+					createdAt , 
+					deleted ,
 					createdQuiz: [],
 					attemptedQuiz: []
 				})
@@ -122,7 +132,10 @@ const updateQuiz = async (updatedQuiz,res) =>{
 			const optionId = updatedQuiz.optionId
 			
 			const sop = updatedQuiz.questions.selectedOptions
-			const reply = [{"id":id,"selectedOp":sop, "optionId": optionId}]
+			let reply = [{"id":id,"selectedOp":sop, "optionId": optionId}]
+			if(updatedQuiz.opType === 'text'){
+				reply = {"id":id,"textAns": updatedQuiz.message}
+			}
 			const vid = await db.collection('responses').find({_id:updatedQuiz.quizId})
 			const quiz = await vid.toArray()
 			console.log("length",quiz[0])
