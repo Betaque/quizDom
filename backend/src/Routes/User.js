@@ -12,15 +12,17 @@ const Router = express.Router();
 // For logging in
 
 Router.post('/login', (req,res) =>{
+    const {email , password} = req.body
     const {errors , isValid} = loginValidator(req.body) //here we are checking the validations
     if(!isValid){ //getting the validity check
         res.json({success: false, errors});
     }else{
-        Users.findOne({email: req.body.email}).then(user=>{ //finding an element from the data base using the mail id
+
+        DB.getUser(email).then(user=>{ //finding an element from the data base using the mail id
             if(!user){ //if user does not exists
                 res.json({message: "Email does not exist", success: false});
             }else{
-                bcrypt.compare(req.body.password, user.password).then(success =>{ //if user exists then we compare the password provided and the password stored in the database
+                bcrypt.compare(password, user.password).then(success =>{ //if user exists then we compare the password provided and the password stored in the database
                     if(!success){
                         res.json({message: "Invalid Password", success: false});//If we get dont get the succes in doing this.
                     }else{//If we get the succes in validating properly
@@ -28,6 +30,7 @@ Router.post('/login', (req,res) =>{
                             id: user._id,
                             name: user.firstName
                         }
+                        console.log("process",process.env.APP_SECRET)
                         jwt.sign(payload, process.env.APP_SECRET, {expiresIn: 2155926},
                             (err,token) =>{
                                 res.json({
@@ -68,12 +71,7 @@ Router.post('/register', (req,res) => {
                     return
                 }
                 registerUser.password = hash; // assigning the datas password as hash
-                DB.createUser(registerUser,res).then(()=>{
-                    res.json({"message": "User created Successfully", "success": true})
-                })
-                // registerUser.save().then(() =>{ // saving in the database
-                //     res.json({"message": "User created Successfully", "success": true})
-                // }).catch(er => res.json({message: er.message, success:false}));
+                DB.createUser(registerUser,res)
             })
         })
     }

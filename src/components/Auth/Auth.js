@@ -10,9 +10,11 @@ export default function Auth(props){
     let navigate = useNavigate();
 
     const [state, setState] = useState('signin')
+    
 
     let signIn = (email, password) =>{
         axios.post(`${process.env.REACT_APP_HOST}/api/users/login`, {email, password}).then(res=> {
+            console.log("ress",res)
             if(res.data.success){
                 store.dispatch({
                     type: 'login',
@@ -31,14 +33,16 @@ export default function Auth(props){
     let signUp = (firstName, lastName, email , password) =>{
         console.log("sign in")
         axios.post(`${process.env.REACT_APP_HOST}/api/users/register`, {firstName,lastName,email, password}).then(res=> {
+            console.log("Res from signUp",res)
             if(res.data.success){
                 console.log("Yeahhhhhhh")
                 setState('signin')
             }
         }).catch(err =>{
-            console.log("err",err)
+            console.log("err from catch",err)
         })
     }
+    console.log("state?",state)
 
     let changeTab = () =>{
         page = state === 'signin' ? setState('signup')  : setState('signin') 

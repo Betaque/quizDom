@@ -86,7 +86,9 @@ const App = () => {
 						{/* <Route path='/currentUser'>
 							<CurrentUser user={user} />
 						</Route> */}
-						<Route path='/dashboard' element={user.email==="tushar.verma@betaque.com" ? <UserDashboard user={user} /> : <NotFoundPage />} />
+						<Route path='/dashboard' element={<UserDashboard user={user} />} />
+
+						{/* <Route path='/dashboard' element={user.email==="tushar.verma@betaque.com" ? <UserDashboard user={user} /> : <NotFoundPage />} /> */}
 						<Route path='/create-quiz' element={<CreateQuiz user={user} />} />
 						<Route path='/created-succesfully/:quizCode'
 							component={CreatedSuccesfully}

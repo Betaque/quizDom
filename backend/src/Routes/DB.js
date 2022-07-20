@@ -54,23 +54,26 @@ const createUser = async (data,res) => {
 					createdQuiz: [],
 					attemptedQuiz: []
 				})
-				res.status(200).json({ message: 'User Created successfully.' })
+				res.status(200).json({ message: 'User Created successfully.' , success: true})
 			} else {
-				res.status(200).json({ message: 'User Record Exist' })
+				res.status(200).json({ message: 'User Record Exist' , success: false})
 			}
 		})
 	}
 	catch{
-		res.status(404).json({ message: 'Error Occurred' })
+		res.status(404).json({ message: 'Error Occurred' , success: false})
 	}
 }
 
-const getUser = async (uid,res) =>{
+getUser = async (email) =>{
+	let user
 	await withDB(async(db) => {
-		const user = await db.collection('users').findOne({ uid: uid })
-		// console.log(user)
-	}
-)}
+			user = await db.collection('users').findOne({ email: email })
+			console.log("user",user)
+			
+		})
+	return user
+}
 
 createQuiz = async (quiz, res) => {
 	try {
