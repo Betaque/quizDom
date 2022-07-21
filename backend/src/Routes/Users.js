@@ -12,6 +12,14 @@ Router.post('/create', (req, res) => {
 	DB.createUser(uid, name, email, res)
 })
 
+// Get user
+
+Router.post('/find', (req, res) => {
+	const {id} = req.body
+	console.log("iddd",id)
+	DB.findUser(id,res)
+})
+
 // Get user Data
 Router.get('/:uid', (req, res) => {
 	const uid = req.params.uid

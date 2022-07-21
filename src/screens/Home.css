@@ -83,6 +83,107 @@
 .signIn-btn:focus {
 	outline: none;
 }
+
+.auth-wrapper .right{
+    position: relative;
+    padding: 0px 100px;
+    text-align: center;
+    /* width: calc(50% - 200px); */
+    padding-bottom: 50px;
+	background-color: var(--secondary);
+	border-radius: 30px;
+	align-items: center;
+	transition: 0.3s;
+	border-radius: 20px;
+	padding-bottom: 50px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.auth-wrapper .right .header{
+	padding-top: 40px;
+	margin-top: 20px;
+    font-size: 4em;
+    letter-spacing: 1px;
+	color: rgb(255, 255, 255);
+}
+
+.auth-wrapper .right .sub-header{
+    font-size: 1.5em;
+    color: rgb(255, 255, 255);
+}
+
+.auth-wrapper .form{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.auth-wrapper .input{
+    width: 20vw;
+    caret-color: black;
+	border-radius: 30px;
+	border: none;
+    border-bottom: 1px solid darkgray;
+    font-size: 1em;
+    color: darkgray;
+    padding: 15px;
+    padding-left: 10px;
+    outline: none;
+}
+
+.auth-wrapper .sign-in-wrapper .input-wrapper{
+    padding-top: 30px;
+}
+
+.auth-wrapper .sign-up-wrapper .input-wrapper:first-child{
+    padding-top: 50px;
+}
+
+.auth-wrapper .sign-up-wrapper .input-wrapper{
+    padding-bottom: 30px;
+}
+
+
+.auth-wrapper .input-wrapper .input-label{
+    text-align: left;
+	color: #fff;
+	padding-bottom: 10px;
+}
+
+.auth-wrapper .btn{
+    /* margin-top: 40px;
+    font-size: 1.1em !important;
+    width: 100% !important; */
+	margin: 30px;
+	padding: 12px;
+	font-size: 20px;
+	width: 250px;
+	transition: 0.5s;
+	background-size: 200% auto;
+	border-radius: 50px;
+	border: none;
+	background-image: linear-gradient(
+		to right,
+		var(--secondary) -30%,
+		var(--accent-pink) 30%,
+		var(--accent-mustard) 100%
+	);
+	color: var(--primary);
+}
+
+.auth-wrapper .btn:hover {
+	background-position: right center; /* change the direction of the change here */
+	color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.auth-wrapper .new{
+    margin-top: 30px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+}
+
+
 #firebaseui_container {
 	width: 100%;
 }

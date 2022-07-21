@@ -80,12 +80,9 @@ Router.post('/register', (req,res) => {
 
 // Getting the element only when you are logged in
 
-Router.get('/:id', checkAuth ,(req,res) =>{ //here with the help of checkauth we are checking that for accessing the web page the user is signed in or not.
-    Users.findOne({_id: req.params.id}).then(user=>{
-        res.json({user, success:true})
-    }).catch(er =>{
-        res.json({success:false, message:er.message})
-    })
+Router.get('/:id', checkAuth ,(req,res) =>{ 
+    //here with the help of checkauth we are checking that for accessing the web page the user is signed in or not.
+    DB.findUser(req.params.id,res)
 })
 
 module.exports = Router;

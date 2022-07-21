@@ -33,7 +33,7 @@ const withDB = async (operations, res) => {
 
 const createUser = async (data,res) => {
 	try{
-		const {firstName , lastName , email , password , createdAt , deleted } = data
+		const {firstName , collegename , email , password , createdAt , deleted } = data
 		console.log("creating a user")
 		console.log("data",data._id)
 		const uid = data._id
@@ -46,7 +46,7 @@ const createUser = async (data,res) => {
 				const result = await db.collection('users').insertOne({
 					uid,
 					firstName , 
-					lastName , 
+					collegename , 
 					email , 
 					password , 
 					createdAt , 
@@ -73,6 +73,17 @@ getUser = async (email) =>{
 			
 		})
 	return user
+}
+
+findUser = async (id,res) =>{
+	try{
+		await withDB(async(db) =>{
+			const user = await db.collection('users').findOne({_id : new ObjectId(id)})
+			res.status(200).json({message: "Found User", success: true, user: user})
+		})
+	}catch{
+		res.status(200).json({message: "User Not Found", success:false})
+	}
 }
 
 createQuiz = async (quiz, res) => {
@@ -371,6 +382,7 @@ module.exports.withDB = withDB
 module.exports.updateQuiz = updateQuiz
 module.exports.createUser = createUser
 module.exports.getUser = getUser
+module.exports.findUser = findUser
 module.exports.getModals = getModals
 module.exports.createQuiz = createQuiz
 module.exports.submitQuiz = submitQuiz

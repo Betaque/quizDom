@@ -23,14 +23,22 @@ import ShowResponses from './screens/ShowResponse'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
 // import CurrentUser from './firebase/currentUser'
 import AttemptedModal from './screens/AttemptedModal'
-import Auth from './components/Auth/Auth'
+// import Auth from './components/Auth/Auth'
 require('dotenv').config()
 
 const App = () => {
 	const [user, setUser] = useState({})
 	useEffect(() => {
 		if(localStorage.getItem('_ID')){
-			axios.get(`/api/users/${localStorage.getItem('_ID')}`).then(res => {
+			console.log("found the id")
+			let id = localStorage.getItem('_ID')
+			console.log("ID",id)
+			axios.get(`${process.env.REACT_APP_HOST}/api/users/${id}`,{
+				headers: {
+					authorization: localStorage.getItem('JWT_PAYLOAD')
+				  }
+			}).then(res => {
+				console.log("res from localstorage",res)
 			  store.dispatch({
 				user: res.data.user,
 				type: 'set_user'
@@ -69,20 +77,19 @@ const App = () => {
 		// }
 		// createUserInDB()
 	}, [])
+	console.log("user",user)
 	return (
 		<div className='App'>
-			{/* {!firebase.auth().currentUser ? (
+			{!user.name? (
 				<Home setUser={setUser} />
-			) : ( */}
+			) : (
 				<>
 					<div>
 						<Appbar user={user} setUser={setUser} />
 					</div>
 					<Routes>
-						<Route exact path="/" element={<Auth />}/>
-						{/* <Route exact path='/'>
-							<OneTimeDashBoard user={user} />
-						</Route> */}
+						<Route exact path='/' element={<OneTimeDashBoard user={user} />} />
+							
 						{/* <Route path='/currentUser'>
 							<CurrentUser user={user} />
 						</Route> */}
@@ -105,10 +112,11 @@ const App = () => {
 						<Route component={NotFoundPage} />
 					</Routes>
 				</>
-			{/* )
-			} */}
+			 )
+			} 
 		</div>
 	)
 }
+
 
 export default App

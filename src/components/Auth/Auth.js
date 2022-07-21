@@ -13,17 +13,19 @@ export default function Auth(props){
     
 
     let signIn = (email, password) =>{
+        console.log("Signing in")
         axios.post(`${process.env.REACT_APP_HOST}/api/users/login`, {email, password}).then(res=> {
-            console.log("ress",res)
+            console.log("ress from the api",res)
             if(res.data.success){
+                console.log("shi hai")
                 store.dispatch({
                     type: 'login',
                     _id: res.data.user._id,
                     user: res.data.user,
                     token: res.data.token
                 });
-                console.log(store.getState())
-                navigate("./dashboard", { replace: true });
+                console.log("console",store.getState())
+                navigate("./", { replace: true });
             }
         }).catch(err =>{
             console.log(err)

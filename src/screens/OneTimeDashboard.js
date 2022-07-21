@@ -20,7 +20,7 @@ const OneTimeDashboard = ({ user }) => {
 						<b>Quiz</b>dom
 					</h1>
 					{
-						user.email==="tushar.verma@betaque.com" ? 
+						user.email==="verma071276@gmail.com" ? 
 						<>
 							<button className='button one-time-button' onClick={onDashboard}>
 								Dashboard

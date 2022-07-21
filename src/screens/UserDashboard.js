@@ -22,7 +22,7 @@ const UserDashboard = ({ user }) => {
 			return
 		}
 		let validator = user.email
-		if(validator === 'tushar.verma@betaque.com'){
+		if(validator === 'verma071276@gmail.com'){
 			console.log("enter")
 			setIsValid(true)
 		}
