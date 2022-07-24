@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link , Navigate} from 'react-router-dom'
+import { Link , Navigate , useParams} from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 // import AttemptedModal from './AttemptedModal'
@@ -11,8 +11,8 @@ import QuestionCard from "../components/QuestionCard"
 require('dotenv').config()
 
 
-const AttemptQuiz = ({ match }) => {
-	const quizCode = match.params.quizCode
+const AttemptQuiz = () => {
+	const {quizCode} = useParams()
 	const [questions, setQuestions] = useState([])
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')

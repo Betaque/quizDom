@@ -3,13 +3,17 @@ import ResponseQuestionCard from '../components/ResponseQuestionCard'
 // import { useLocation } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
+import { useParams} from 'react-router-dom'
+
 require('dotenv').config()
 
 
 
-const ShowQuiz = ({ match }) => {
-	const quizCode = match.params.quizid
-	const userCode = match.params.uid
+const ShowQuiz = () => {
+	const quizCode = useParams().quizid
+	const userCode = useParams().uid
+	// const quizCode = match.params.quizid
+	// const userCode = match.params.uid
 	const [questions, setQuestions] = useState([])
 	const [responses, setResponses] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')

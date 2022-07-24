@@ -1,13 +1,16 @@
 import React, {useState,useEffect} from "react";
 import firebase from '../firebase/firebase'
+import GetUser from "./Auth/GetUser";
 
 const QuestionCard = (props) =>{
     const {question,index,quizCode,attemptedQuestions} = props
     // const [attemptedQuestions, setAttemptedQuestions] = useState([])
     const [qResps , setqResps] = useState([])
 	const [isVal,setisVal] = useState();
+	const [user,setUser] = useState()
 	const [message, setMessage] = useState('');
-    const uid = firebase.auth().currentUser.uid
+    const uid = user
+	
 
     useEffect(() =>{
 		try{
@@ -20,10 +23,8 @@ const QuestionCard = (props) =>{
 					},
 				})
 				const data = await res.json()
-				// console.log("data in fetch",data)
-				// if(data[0].textAns){
-				// 	setMessage(data[0].textAns)
-				// }
+				{<GetUser setUser={setUser} />}
+				
 				let arr = []
 				if(!data.error){
 					data.forEach((element) => {
@@ -43,7 +44,7 @@ const QuestionCard = (props) =>{
 		
 
     })
-
+	console.log("uid",uid)
 
     const handleOptionChecked = (option, index,id) =>{
 		let selected = false

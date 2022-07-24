@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import './CreatedSuccesfully.css'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-const CreatedSuccesfully = ({ match }) => {
+const CreatedSuccesfully = () => {
 	const [Copy, setCopy] = useState('copy')
+	const {quizCode} = useParams()
 	return (
 		<div id='created-quiz'>
 			<div id='created-quiz-div'>
@@ -16,12 +17,12 @@ const CreatedSuccesfully = ({ match }) => {
 					type='text'
 					// className='input-text'
 					id={Copy}
-					value={match.params.quizCode}
+					value={quizCode}
 					disabled={true}
 					// onChange={(e) => {}}
 				/>
 				<CopyToClipboard
-					text={match.params.quizCode}
+					text={quizCode}
 					onCopy={() => {
 						setCopy('copied')
 					}}

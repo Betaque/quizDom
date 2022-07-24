@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import './Sidebar.css'
 import firebase from '../firebase/firebase'
 import Home from '../screens/Home'
 import { Icon } from '@material-ui/core'
+import axios from "axios"
 
 import {
 	CreateNewFolder,
@@ -13,6 +14,7 @@ import {
 	MenuOpenRounded,
 	MenuRounded,
 } from '@material-ui/icons'
+import { useEffect } from 'react'
 
 require('dotenv').config()
 
@@ -41,14 +43,31 @@ function Sidebar() {
 	const [sidebar, setSidebar] = useState(false)
 	const [user, setUser] = useState({})
 	const showSidebar = () => setSidebar(!sidebar)
+	useEffect(()=>{
+		if(!user.name && localStorage.getItem('_ID')){
+				let id = localStorage.getItem('_ID')
+				axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+					headers: {
+						authorization: localStorage.getItem('JWT_PAYLOAD')
+					  }
+				}).then(res => {
+					setUser(res.data.user)
+				}).catch((er) => {
+				  console.log(er)
+				})
+			  
+		}
+		
+	})
+
 	if (signOut) return <Navigate to='/' />
 
-	
+
 	return (
 		<div className='App'>
-			{!firebase.auth().currentUser ? (
+			{user.name ? (
 			<Home setUser={setUser} />
-		) : (
+				) : (
 		<>
 			<div>
 			<Icon className='menu-bars' onClick={showSidebar}>

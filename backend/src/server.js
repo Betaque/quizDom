@@ -8,7 +8,7 @@ const userRoute = require('./Routes/Users')
 const quizzesRoute = require('./Routes/Quizzes')
 // const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const userRoutes = require('./Routes/User')
+// const userRoutes = require('./Routes/User')
 
 // Hosting Frontend
 // Create a production build of the frontend and paste the files in the public folder
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true, limit: '20mb'}))
 app.use(bodyParser.json({ limit: '20mb' }))
 
-app.use('/api/users', userRoutes)
+// app.use('/api/users', userRoutes)
 app.use('/API/users', userRoute)
 app.use('/API/quizzes', quizzesRoute)
 

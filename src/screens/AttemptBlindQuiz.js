@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import AttemptedModal from './AttemptedModal'
@@ -9,13 +9,13 @@ import SpeechRecognition, {
 	useSpeechRecognition
 } from 'react-speech-recognition'
 require('dotenv').config()
-const AttemptBlindQuiz = ({ match }) => {
+const AttemptBlindQuiz = () => {
 	const [commands, setCommands] = useState([])
 	const speak = (string) =>
 		synthRef.current.speak(new SpeechSynthesisUtterance(string))
 	// Quiz Data Model
 	const [currentIndex, setCurrentIndex] = useState(0)
-	const quizCode = match.params.quizCode
+	const {quizCode} = useParams()
 	const [questions, setQuestions] = useState([])
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')

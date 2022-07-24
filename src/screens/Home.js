@@ -4,7 +4,7 @@ import Signup from "../components/Auth/Signup"
 // import './Auth.css'
 import store from '../store/index'
 import axios from "axios"    
-import {useNavigate} from "react-router-dom"
+import {Navigate} from "react-router-dom"
 import './Home.css'
 // import { StyledFirebaseAuth } from 'react-firebaseui'
 // import firebase from '../firebase/firebase'
@@ -12,7 +12,7 @@ import LoadingScreen from './LoadingScreen'
 
 const Home = ({ setUser }) => {
 	const [loading, setLoading] = useState(true)
-	let navigate = useNavigate();
+	// let navigate = useNavigate();
 
     const [state, setState] = useState('signin')
 
@@ -20,12 +20,11 @@ const Home = ({ setUser }) => {
 		let isMounted = true
 		const id = localStorage.getItem('_ID')
 		console.log("id",id)
-		const fetchUser = () =>{
+		const fetchUser = async () =>{
 			console.log("inside functions")
 			// setIsLoggedIn(!!user)
-			axios.post(`${process.env.REACT_APP_HOST}/API/users/find`, {id})
-			.then((res)=>{
-				console.log("response",res)
+			try{
+				const res = await axios.post(`${process.env.REACT_APP_HOST}/API/users/find`, {id})
 				if(res.data.success){
 					setUser({
 						uid: res.data.user.uid,
@@ -33,14 +32,16 @@ const Home = ({ setUser }) => {
 						email: res.data.user.email
 					})
 					console.log('User Logged In')
-					navigate("./show", { replace: true });
 				}else {
 					console.log('User Signed Out')
 					setUser({})
 				}
 				console.log('auth change')
 				if (isMounted) setLoading(false)
-			})
+			}catch{
+				console.log("errror from home js")
+			}
+			
 		}
 		if(id){
 			fetchUser()
@@ -49,22 +50,6 @@ const Home = ({ setUser }) => {
 			setLoading(false)
 		}
 
-		// firebase.auth().onAuthStateChanged((user) => {
-		// 	// setIsLoggedIn(!!user)
-		// 	if (user && isMounted) {
-		// 		setUser({
-		// 			uid: firebase.auth().currentUser.uid,
-		// 			name: firebase.auth().currentUser.displayName,
-		// 			email: firebase.auth().currentUser.email,
-		// 		})
-		// 		console.log('User Logged In')
-		// 	} else {
-		// 		console.log('User Signed Out')
-		// 		setUser({})
-		// 	}
-		// 	console.log('auth change')
-		// 	if (isMounted) setLoading(false)
-		// })
 		return () => (isMounted = false)
 	}, [setUser])
     
@@ -81,7 +66,7 @@ const Home = ({ setUser }) => {
                     token: res.data.token
                 });
                 console.log(store.getState())
-                navigate('./dashboard');
+				return <Navigate push to={'./'} />
             }
         }).catch(err =>{
             console.log(err)

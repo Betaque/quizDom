@@ -6,39 +6,43 @@ import LoadingScreen from './LoadingScreen'
 import CreateQuiz from './CreateQuiz'
 // import OneTimeDashBoard from './OneTimeDashboard'
 import { Navigate } from 'react-router-dom'
+import axios from "axios"
 require('dotenv').config()
 
 const UserDashboard = ({ user }) => {
-	console.log(user)
 	const [createdQuizzes, setCreatedQuizzes] = useState([])
 	const [attemptedQuizzes, setAttemptedQuizzes] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [editQuiz, setEditQuiz] = useState([])
 	const [isValid, setIsValid] = useState(false)
-	// Fetch Data from the API
 	useEffect(() => {
 		if (!user.uid) {
 			setLoading(false)
 			return
 		}
+		
 		let validator = user.email
 		if(validator === 'verma071276@gmail.com'){
 			console.log("enter")
 			setIsValid(true)
 		}
 
-		console.log(process.env.REACT_APP_HOST)
-		console.log(user.uid)
 		const fetchQuizData = async () => {
-			const results = await fetch(`${process.env.REACT_APP_HOST}/API/users/${user.uid}`)
-			console.log("results",results)
-			const quizData = await results.json()
-			if (quizData.createdQuiz) setCreatedQuizzes(quizData.createdQuiz)
-			if (quizData.attemptedQuiz) setAttemptedQuizzes(quizData.attemptedQuiz)
+			const results = await axios.get(`${process.env.REACT_APP_HOST}/API/users/${user.uid}`)
+			console.log("results",results.data.createdQuiz)
+			if(results.data.createdQuiz) setCreatedQuizzes(results.data.createdQuiz)
+			if(results.data.attemptedQuiz) setAttemptedQuizzes(results.data.attemptedQuiz)
+			// if (quizData.user.createdQuiz) setCreatedQuizzes(quizData.user.createdQuiz)
+			// if (quizData.user.attemptedQuiz) setAttemptedQuizzes(quizData.user.attemptedQuiz)
+
 			setLoading(false)
 		}
-		if (user){ fetchQuizData()}
+		if(user){ 
+			fetchQuizData()
+		}
 	}, [user])
+
+
 	const editQuizHandle = async (title, questions, isOpen) => {
 		if (!title) setEditQuiz([])
 		else {
@@ -64,7 +68,7 @@ const UserDashboard = ({ user }) => {
 				},
 			})
 			const submitData = await results.json()
-			console.dir(submitData)
+			console.dir("submitData",submitData)
 			const temp = [...createdQuizzes]
 			temp[editQuiz[0]].title = title
 			temp[editQuiz[0]].questions = questions
@@ -75,22 +79,24 @@ const UserDashboard = ({ user }) => {
 		}
 	}
 
+	console.log("edit quiz",editQuiz)
+
 	if (loading) return <LoadingScreen />
 	
 	const validateRedirection = () =>{
 		return <Navigate exact={process.env.REACT_APP_HOST} />
 	}
 
-	if (editQuiz.length)
-		return (
-			<CreateQuiz
-				user={user}
-				quizTitle={createdQuizzes[editQuiz].title}
-				questions={createdQuizzes[editQuiz].questions}
-				isOpen={createdQuizzes[editQuiz].isOpen}
-				editQuizHandle={editQuizHandle}
-			/>
-		)
+		if (editQuiz.length)
+			return (
+				<CreateQuiz
+					user={user}
+					quizTitle={createdQuizzes[editQuiz].title}
+					questions={createdQuizzes[editQuiz].questions}
+					isOpen={createdQuizzes[editQuiz].isOpen}
+					editQuizHandle={editQuizHandle}
+				/>
+			)
 		if(!isValid){
 			return validateRedirection()
 		}

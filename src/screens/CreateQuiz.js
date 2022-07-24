@@ -20,7 +20,7 @@ const CreateQuiz = ({
 	const [access, setAccesss] = useState(true)
 	const [loading, setLoading] = useState('stop')
 	const [quizCode, setQuizCode] = useState(null)
-
+	console.log("user from create quuiz",user)
 	const addQuestionHandle = (title, optionType, options) => {
 		const arr = [...questionArray]
 		arr.push({ title, optionType, options })
@@ -49,7 +49,6 @@ const CreateQuiz = ({
 		setLoading('start')
 		try {
 			console.log("question array", questionArray)
-			console.log(process.env.REACT_APP_HOST)
 			const result = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/create`, {
 				method: 'POST',
 				body: JSON.stringify({

@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
-import firebase from './firebase/firebase'
 import store from './store';
 import axios from "axios"
 
@@ -21,7 +20,6 @@ import Appbar from './components/Appbar'
 import Responses from './screens/Responses'
 import ShowResponses from './screens/ShowResponse'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
-// import CurrentUser from './firebase/currentUser'
 import AttemptedModal from './screens/AttemptedModal'
 // import Auth from './components/Auth/Auth'
 require('dotenv').config()
@@ -30,19 +28,16 @@ const App = () => {
 	const [user, setUser] = useState({})
 	useEffect(() => {
 		if(localStorage.getItem('_ID')){
-			console.log("found the id")
 			let id = localStorage.getItem('_ID')
-			console.log("ID",id)
-			axios.get(`${process.env.REACT_APP_HOST}/api/users/${id}`,{
+			axios.get(`${process.env.REACT_APP_HOST}/API/users/${id}`,{
 				headers: {
 					authorization: localStorage.getItem('JWT_PAYLOAD')
 				  }
 			}).then(res => {
-				console.log("res from localstorage",res)
-			  store.dispatch({
-				user: res.data.user,
-				type: 'set_user'
-			  })
+				store.dispatch({
+					user: res.data.user,
+					type: 'set_user'
+				})
 			}).catch((er) => {
 			  console.log(er)
 			})
@@ -80,7 +75,7 @@ const App = () => {
 	console.log("user",user)
 	return (
 		<div className='App'>
-			{!user.name? (
+			{!user.name ? (
 				<Home setUser={setUser} />
 			) : (
 				<>
@@ -89,27 +84,21 @@ const App = () => {
 					</div>
 					<Routes>
 						<Route exact path='/' element={<OneTimeDashBoard user={user} />} />
-							
-						{/* <Route path='/currentUser'>
-							<CurrentUser user={user} />
-						</Route> */}
 						<Route path='/dashboard' element={<UserDashboard user={user} />} />
 
-						{/* <Route path='/dashboard' element={user.email==="tushar.verma@betaque.com" ? <UserDashboard user={user} /> : <NotFoundPage />} /> */}
 						<Route path='/create-quiz' element={<CreateQuiz user={user} />} />
-						<Route path='/created-succesfully/:quizCode'
-							component={CreatedSuccesfully}
+						<Route path='/created-succesfully/:quizCode'element={<CreatedSuccesfully />}
 						/>
 						<Route path='/join-quiz' element={<JoinQuiz user={user} />} />
 						<Route path='/result/:qid' element={<AttemptedModal user={user}/>} />
-						<Route path='/attempt-quiz/:quizCode' component={AttemptQuiz} />
+						<Route path='/attempt-quiz/:quizCode' element={<AttemptQuiz />} />
 						<Route
 							path='/attempt-blind-quiz/:quizCode'
-							component={AttemptBlindQuiz}
+							element={<AttemptBlindQuiz />}
 						/>
-						<Route path='/responses/:quizCode' component={Responses} />
-						<Route path='/res/:quizid/:uid' component={ShowResponses} />
-						<Route component={NotFoundPage} />
+						<Route path='/responses/:quizCode' element={<Responses />} />
+						<Route path='/res/:quizid/:uid' element={<ShowResponses />} />
+						<Route element={<NotFoundPage />} />
 					</Routes>
 				</>
 			 )

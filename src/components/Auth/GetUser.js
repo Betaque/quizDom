@@ -1,0 +1,27 @@
+import React , {useEffect,useState} from "react";
+import axios from "axios";
+
+const GetUser = (setUser) =>{
+    useEffect(()=>{
+        if(localStorage.getItem('_ID')){
+            console.log("found the id")
+            let id = localStorage.getItem('_ID')
+            console.log("ID",id)
+            axios.get(`${process.env.REACT_APP_HOST}/api/users/${id}`,{
+                headers: {
+                    authorization: localStorage.getItem('JWT_PAYLOAD')
+                  }
+            }).then(res => {
+                console.log("res from localstorage",res)
+                setUser(res.data.user.uid)
+            }).catch((er) => {
+              console.log(er)
+            })
+          }
+    })
+    
+    return null
+
+}
+
+export default GetUser;

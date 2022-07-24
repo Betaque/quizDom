@@ -8,7 +8,7 @@ const timer = require('../Algorithms/TimerSystem')
 // Middleware
 
 const validateUser = async (req,res,next) =>{
-	req.body.uid == "KYf42ETgJkQHyomXwiUG4YPEvb93" ? next() : res.json({"message":"unauthorized"})  
+	req.body.uid == "62d7ef8b75d0f9bb27490945" ? next() : res.json({"message":"unauthorized"})  
 }
 
 

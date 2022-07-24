@@ -85,22 +85,41 @@ findUser = async (id,res) =>{
 		res.status(200).json({message: "User Not Found", success:false})
 	}
 }
+findUserUid = async (id,res) =>{
+	try{
+		await withDB(async(db) =>{
+			const user = await db.collection('users').findOne({uid: new ObjectId(id)})
+			console.log("user from the find user",user)
+			res.status(200).json({message: "Found User", success: true, user: user})
+		})
+	}catch{
+		res.status(200).json({message: "User Not Found", success:false})
+	}
+}
 
 createQuiz = async (quiz, res) => {
 	try {
 		await withDB(async (db) => {
 			quiz['responses'] = []
+			console.log("responses from the create quiz db",quiz)
 			const result = await db.collection('quizzes').insertOne(quiz)
 			res.status(200).json({
 				message: 'Quiz created successfully',
 				quizId: result.insertedId
 			})
 			console.log('quiz ID', result.insertedId)
-			const query = { uid: quiz.uid }
-			const addQuiz = {
-				$push: { createdQuiz: result.insertedId }
-			}
-			await db.collection('users').updateOne(query, addQuiz)
+			console.log("quiz uid",quiz.uid)
+			// const query = { uid: new Object(quiz.uid) }
+			// console.log("query",query)
+			// const addQuiz = {
+			// 	$push: { createdQuiz: result.insertedId }
+			// }
+			const val = await db.collection('users').updateOne(
+				{uid : ObjectId(quiz.uid)}, 
+				{
+					$push: { createdQuiz: result.insertedId }
+				}
+			)
 			console.log('Quiz Added to Creator Document: ', result.insertedId)
 		})
 	} catch (error) {
@@ -109,16 +128,6 @@ createQuiz = async (quiz, res) => {
 	}
 }
 
-// const updateText = async (updateText, res) =>{
-// 	withDB(async(db) =>{
-// 		try{
-
-// 		}
-// 		catch{
-// 			console.log("Error Submitting the text!")
-// 		}
-// 	})
-// }
 
 
 const updateQuiz = async (updatedQuiz,res) =>{
@@ -383,6 +392,7 @@ module.exports.updateQuiz = updateQuiz
 module.exports.createUser = createUser
 module.exports.getUser = getUser
 module.exports.findUser = findUser
+module.exports.findUserUid = findUserUid
 module.exports.getModals = getModals
 module.exports.createQuiz = createQuiz
 module.exports.submitQuiz = submitQuiz
