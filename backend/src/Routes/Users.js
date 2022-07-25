@@ -107,7 +107,7 @@ Router.post('/login', (req,res) =>{
                     }else{//If we get the succes in validating properly
                         const payload = {
                             id: user._id,
-                            name: user.firstName
+                            name: user.name
                         }
                         console.log("process",process.env.APP_SECRET)
                         jwt.sign(payload, process.env.APP_SECRET, {expiresIn: 2155926},
@@ -134,10 +134,10 @@ Router.post('/register', (req,res) => {
     if(!isValid){
         res.json({success: false, errors});
     }else{ //if the validation is done properly then go ahead
-        const {firstName , lastName , email , password} = req.body;//destructuring all the fields
+        const {name , collegename , email , password} = req.body;//destructuring all the fields
         const registerUser = new Users({ // here we are making a new data
-            firstName,
-            lastName,
+            name,
+            collegename,
             email,
             password,
             createdAt: new Date()

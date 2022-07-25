@@ -28,7 +28,7 @@ const Home = ({ setUser }) => {
 				if(res.data.success){
 					setUser({
 						uid: res.data.user.uid,
-						name: res.data.user.firstName + res.data.user.lastName,
+						name: res.data.user.name,
 						email: res.data.user.email
 					})
 					console.log('User Logged In')
@@ -55,7 +55,7 @@ const Home = ({ setUser }) => {
     
 
     let signIn = (email, password) =>{
-        axios.post(`${process.env.REACT_APP_HOST}/api/users/login`, {email, password}).then(res=> {
+        axios.post(`${process.env.REACT_APP_HOST}/API/users/login`, {email, password}).then(res=> {
             
             if(res.data.success){
 				console.log("ress from teh res.data.success",res)
@@ -73,8 +73,8 @@ const Home = ({ setUser }) => {
         })
     }
 
-    let signUp = (firstName, collegename, email , password) =>{
-        axios.post(`${process.env.REACT_APP_HOST}/api/users/register`, {firstName,collegename,email, password}).then(res=> {
+    let signUp = (name, collegename, email , password) =>{
+        axios.post(`${process.env.REACT_APP_HOST}/API/users/register`, {name,collegename,email, password}).then(res=> {
             console.log("Res from signUp",res)
             if(res.data.success){
                 setState('signin')

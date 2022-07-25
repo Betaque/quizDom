@@ -15,6 +15,8 @@ const evaluate = (time) =>{
         sendTimeLeft = secondsLeft
         // console.log("quiz",Quiz)
         if(secondsLeft == 0) {
+            // window.localStorage.removeItem("count_timer")
+            // localStorage.removeItem("count_timer")
             clearInterval(sleft)
             console.log("done")
             return true

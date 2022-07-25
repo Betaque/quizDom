@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import { Link , Navigate , useParams} from 'react-router-dom'
-import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 // import AttemptedModal from './AttemptedModal'
 import Timer from "../components/Timer";
 import Settings from "../components/Settings";
 import SettingsContext from "../components/SettingsContext";
 import QuestionCard from "../components/QuestionCard"
+import TimeUp from "../components/TimeUp"
+import axios from "axios"
 
 require('dotenv').config()
 
 
-const AttemptQuiz = () => {
+const AttemptQuiz = (props) => {
 	const {quizCode} = useParams()
 	const [questions, setQuestions] = useState([])
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')
 	const [loading, setLoading] = useState(true)
 	const [active,setActive] = useState(false)
-	// const [submission, setSubmission] = useState(false)
+	const [uid,setUid] = useState()
 	// const [result, setResult] = useState({})
 	const [redirect,setRedirect] = useState(false)
-	// const [showModal, setShowModal] = useState(false)
-	const uid = firebase.auth().currentUser.uid
+	const [showModal, setShowModal] = useState(false)
 	// const [quizStatus, setQuizStatus] = useState(false)
 	// const [timer,setTimer] = useState(true)
 	const [showSettings, setShowSettings] = useState(false);
@@ -32,6 +32,21 @@ const AttemptQuiz = () => {
 
 	useEffect(() => {
 			try{
+				if(localStorage.getItem('_ID')){
+					console.log("found the id")
+					let id = localStorage.getItem('_ID')
+					console.log("ID",id)
+					axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+						headers: {
+							authorization: localStorage.getItem('JWT_PAYLOAD')
+						  }
+					}).then(res => {
+						console.log("res from localstorage",res)
+						setUid(res.data.user.uid)
+					}).catch((er) => {
+					  console.log(er)
+					})
+				  }
 				const fetchQuiz = async () => {
 					const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
 						method: 'POST',
@@ -74,6 +89,8 @@ const AttemptQuiz = () => {
 
 	// console.log("quizTime",quizTime)
 
+	
+
 
 	if(redirect) return <Navigate push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
 
@@ -104,14 +121,16 @@ const AttemptQuiz = () => {
 		}
 	}
 
-	// const quizSubmission = () =>{
-	// 	console.log("ENtered the submission")
-	// 	submission = true
-	// 	console.log(submission)
-	// }
-
 
 	if (loading) return <LoadingScreen />
+
+	const submission = () =>{
+		console.log("Entered the sibmission function")
+		setShowModal(true)
+	}
+	if(showModal){
+		return <TimeUp submitQuiz={submitQuiz}/>
+	}
 
 	// For Quiz not Found
 	if (quizTitle === 'ERR:QUIZ_NOT_FOUND')
@@ -176,7 +195,7 @@ const AttemptQuiz = () => {
 								setWorkMinutes
 							}}>
 
-								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? "submitQuiz()" : ''} />}
+								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submission() : ''} />}
 
 							</SettingsContext.Provider>
 							</div>

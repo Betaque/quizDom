@@ -1,20 +1,34 @@
 import React, {useState,useEffect} from "react";
-import firebase from '../firebase/firebase'
-import GetUser from "./Auth/GetUser";
+import axios from "axios"
 
 const QuestionCard = (props) =>{
     const {question,index,quizCode,attemptedQuestions} = props
     // const [attemptedQuestions, setAttemptedQuestions] = useState([])
     const [qResps , setqResps] = useState([])
 	const [isVal,setisVal] = useState();
-	const [user,setUser] = useState()
+	const [uid,setUser] = useState()
 	const [message, setMessage] = useState('');
-    const uid = user
+    // const uid = user
 	
 
     useEffect(() =>{
 		try{
 			const fetchResponses = async () =>{
+
+				if(localStorage.getItem('_ID')){
+					let id = localStorage.getItem('_ID')
+					axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+						headers: {
+							authorization: localStorage.getItem('JWT_PAYLOAD')
+						  }
+					}).then(res => {
+						setUser(res.data.user.uid)
+					}).catch((er) => {
+					  console.log(er)
+					})
+				  }
+
+
 				const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/fetchResponse`, {
 					method: 'POST',
 					body: JSON.stringify({ quizId: quizCode, uid }),
@@ -23,7 +37,6 @@ const QuestionCard = (props) =>{
 					},
 				})
 				const data = await res.json()
-				{<GetUser setUser={setUser} />}
 				
 				let arr = []
 				if(!data.error){
@@ -44,7 +57,6 @@ const QuestionCard = (props) =>{
 		
 
     })
-	console.log("uid",uid)
 
     const handleOptionChecked = (option, index,id) =>{
 		let selected = false

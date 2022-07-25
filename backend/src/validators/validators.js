@@ -21,20 +21,22 @@ module.exports.loginValidator = (data) =>{
 
 module.exports.registerValidator = (data) =>{
     const errors = {};
+    console.log("data from validation",data)
 
     data.email = !(isEmpty(data.email)) ? data.email: ''
     data.password = !(isEmpty(data.password)) ? data.password: ''
-    data.firstName = !(isEmpty(data.firstName)) ? data.firstName: ''
-    data.lastName = !(isEmpty(data.lastName)) ? data.lastName: ''
+    data.name = !(isEmpty(data.name)) ? data.name: ''
+    data.collegename = !(isEmpty(data.collegename)) ? data.collegename: ''
 
     let emailError = validator.isEmpty(data.email) ? 'Email is requried' : (!validator.isEmail(data.email) ? 'Please provide a valid email': '')
     let passwordError = validator.isEmpty(data.password) ? 'Password is required' : ''
-    let firstNameError = validator.isEmpty(data.firstName) ? 'Name is required' : ''
-    let lastNameError = validator.isEmpty(data.lastName) ? 'Last name is required' : ''
+    let nameError = validator.isEmpty(data.name) ? 'Name is required' : ''
+    let collegeNameError = validator.isEmpty(data.collegename) ? 'College Name is Required' : ''
 
     if(emailError) errors.email = emailError
     if(passwordError) errors.password = passwordError
-    if(firstNameError || lastNameError) errors.firstName = 'Full name us required'
+    if(nameError) errors.name = 'Name is Required'
+    if(collegeNameError) errors.collegename = 'College Name is Required'
 
     return{
         errors,

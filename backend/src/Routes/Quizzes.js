@@ -8,7 +8,9 @@ const timer = require('../Algorithms/TimerSystem')
 // Middleware
 
 const validateUser = async (req,res,next) =>{
-	req.body.uid == "62d7ef8b75d0f9bb27490945" ? next() : res.json({"message":"unauthorized"})  
+	console.log("validating user")
+	console.log("req.bodt",req.body)
+	req.body.uid == "62de99786d9327b06a231750" ? next() : res.json({"message":"unauthorized"})  
 }
 
 
@@ -180,6 +182,7 @@ Router.post('/edit', validateUser, (req, res) => {
 })
 
 Router.post('/responses', validateUser, (req, res) => {
+	console.log("inside the responses")
 	const reqBody = req.body
 	console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)

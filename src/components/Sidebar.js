@@ -65,7 +65,7 @@ function Sidebar() {
 
 	return (
 		<div className='App'>
-			{user.name ? (
+			{!user.name ? (
 			<Home setUser={setUser} />
 				) : (
 		<>

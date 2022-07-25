@@ -14,7 +14,7 @@ export default function Auth(props){
 
     let signIn = (email, password) =>{
         console.log("Signing in")
-        axios.post(`${process.env.REACT_APP_HOST}/api/users/login`, {email, password}).then(res=> {
+        axios.post(`${process.env.REACT_APP_HOST}/API/users/login`, {email, password}).then(res=> {
             console.log("ress from the api",res)
             if(res.data.success){
                 console.log("shi hai")
@@ -32,9 +32,9 @@ export default function Auth(props){
         })
     }
 
-    let signUp = (firstName, lastName, email , password) =>{
+    let signUp = (name, lastName, email , password) =>{
         console.log("sign in")
-        axios.post(`${process.env.REACT_APP_HOST}/api/users/register`, {firstName,lastName,email, password}).then(res=> {
+        axios.post(`${process.env.REACT_APP_HOST}/API/users/register`, {name,lastName,email, password}).then(res=> {
             console.log("Res from signUp",res)
             if(res.data.success){
                 console.log("Yeahhhhhhh")

@@ -2,6 +2,7 @@ const {MongoClient} = require('mongodb')
 const Evaluate = require('../Algorithms/EvaluateQuiz')
 const Answers = require('../Algorithms/AnswerQuiz')
 const { CodeSharp } = require('@material-ui/icons')
+const { json } = require('body-parser')
 const ObjectId = require('mongodb').ObjectId
 const API_KEY = require('../db-config').database
 let db
@@ -33,10 +34,11 @@ const withDB = async (operations, res) => {
 
 const createUser = async (data,res) => {
 	try{
-		const {firstName , collegename , email , password , createdAt , deleted } = data
+		const {name , collegename , email , password , createdAt , deleted } = data
 		console.log("creating a user")
-		console.log("data",data._id)
-		const uid = data._id
+		const val = data._id
+		const uid = val.toString()
+		console.log("uid from createUser",uid)
 		console.log("createUser",data)
 		await withDB(async (db) => {
 			const user = await db.collection('users').findOne({ uid: uid })
@@ -45,7 +47,7 @@ const createUser = async (data,res) => {
 				console.log("Entered creating user")
 				const result = await db.collection('users').insertOne({
 					uid,
-					firstName , 
+					name , 
 					collegename , 
 					email , 
 					password , 
@@ -88,7 +90,7 @@ findUser = async (id,res) =>{
 findUserUid = async (id,res) =>{
 	try{
 		await withDB(async(db) =>{
-			const user = await db.collection('users').findOne({uid: new ObjectId(id)})
+			const user = await db.collection('users').findOne({uid: id})
 			console.log("user from the find user",user)
 			res.status(200).json({message: "Found User", success: true, user: user})
 		})
@@ -115,7 +117,7 @@ createQuiz = async (quiz, res) => {
 			// 	$push: { createdQuiz: result.insertedId }
 			// }
 			const val = await db.collection('users').updateOne(
-				{uid : ObjectId(quiz.uid)}, 
+				{uid : quiz.uid}, 
 				{
 					$push: { createdQuiz: result.insertedId }
 				}
@@ -339,21 +341,23 @@ const getModals = (user,qid,res) =>{
 
 const getResponses = (obj, res) => {
 	withDB(async (db) => {
+		console.log("obj.uid",obj.uid)
 		const cursor = db
 			.collection('quizzes')
 			.find({ _id: new ObjectId(obj.quizCode), uid: obj.uid })
 			.project({ responses: 1 })
 		const cursorData = await cursor.toArray()
 		const responses = cursorData[0].responses
-		const uidList = responses.map((response) => response.uid)
-		// console.log(uidList)
-		// console.log(responses)
+		console.log("responses from db",responses)
+		let uidList = responses.map((response) => response.uid)
+		console.log(uidList)
 		const cursor2 = db
 			.collection('users')
 			.find({ uid: { $in: uidList } })
 			.project({ uid: 1, name: 1, email: 1 })
 
 		const cursor2Data = await cursor2.toArray()
+		console.log("cursor 2",cursor2Data)
 		const finalResponse = []
 		cursor2Data.forEach((data) => {
 			let index = responses.findIndex((resp) => resp.uid === data.uid)

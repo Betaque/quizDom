@@ -29,11 +29,13 @@ const App = () => {
 	useEffect(() => {
 		if(localStorage.getItem('_ID')){
 			let id = localStorage.getItem('_ID')
-			axios.get(`${process.env.REACT_APP_HOST}/API/users/${id}`,{
+			axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
 				headers: {
 					authorization: localStorage.getItem('JWT_PAYLOAD')
 				  }
 			}).then(res => {
+				console.log("res from aapp",res)
+				setUser(res.data.user)
 				store.dispatch({
 					user: res.data.user,
 					type: 'set_user'
@@ -72,10 +74,10 @@ const App = () => {
 		// }
 		// createUserInDB()
 	}, [])
-	console.log("user",user)
+	// console.log("user",user.uid)
 	return (
 		<div className='App'>
-			{!user.name ? (
+			{!(user.uid) ? (
 				<Home setUser={setUser} />
 			) : (
 				<>

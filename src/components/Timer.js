@@ -22,7 +22,7 @@ function Timer(props) {
   function tick() {
     if (secondsLeftRef.current === 0) {
           console.log("Completed")
-          localStorage.clear("count_timer");
+          localStorage.removeItem("count_timer")
         }
     secondsLeftRef.current--;
     localStorage.setItem("count_timer",secondsLeftRef.current);
@@ -102,7 +102,8 @@ function Timer(props) {
     const interval = setInterval(() => {
       if (secondsLeftRef.current <= 0) {
         console.log("Completed")
-        localStorage.clear("count_timer");
+        localStorage.removeItem("count_timer")
+        // localStorage.clear("count_timer");
         setSubmission(true)
         return clearInterval(interval)
       }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useEffect,useState} from 'react'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Link, useParams } from 'react-router-dom'
 import Table from '@material-ui/core/Table'
@@ -8,7 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-import firebase from '../firebase/firebase'
+import axios from "axios"
 const StyledTableCell = withStyles((theme) => ({
 	head: {
 		backgroundColor: '#d81e5b',
@@ -42,11 +42,36 @@ const useStyles = makeStyles({
 
 
 export default function ResponsesTable({ responses }) {
+	const [uid,setUid] = useState()
+	useEffect(()=>{
+		try{
+			if(localStorage.getItem('_ID')){
+				console.log("found the id")
+				let id = localStorage.getItem('_ID')
+				console.log("ID",id)
+				axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+					headers: {
+						authorization: localStorage.getItem('JWT_PAYLOAD')
+					  }
+				}).then(res => {
+					console.log("res from localstorage",res)
+					setUid(res.data.user.uid)
+				}).catch((er) => {
+				  console.log(er)
+				})
+			  }
+		}
+		catch{
+			console.log("Some Error occured while finding the user")
+		}
+	})
+	console.log("responses from the response table",responses[0][0])
 	const params = useParams()
 	const classes = useStyles()
-	const uid = firebase.auth().currentUser.uid
+	// const uid = firebase.auth().currentUser.uid
+	const val = responses[0]
 	const quizId = params.quizCode
-	const rows = responses.map((resp) => createData(resp))
+	const rows = val.map((resp) => createData(resp))
 	console.log("responses",responses)
 	return (
 		<TableContainer className={classes.paper} component={Paper}>
