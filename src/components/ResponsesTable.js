@@ -84,17 +84,17 @@ export default function ResponsesTable({ responses }) {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rows.map((row) => (
-						<Link to={`/res/${quizId}/${uid}`} state={{ from: "occupation" }}>
-							<StyledTableRow key={row.name}>
-							<StyledTableCell component='th' scope='row'>
-								{row.name}
-							</StyledTableCell>
-							<StyledTableCell align='center'>{row.email}</StyledTableCell>
-							<StyledTableCell align='right'>{row.score}</StyledTableCell>
-							</StyledTableRow>
-						</Link>
+				<Link to={`/res/${quizId}/${uid}`}>
+					{rows.map((row,index) => (
+						<StyledTableRow key={index}>
+						<StyledTableCell component='th' scope='row'>
+							{row.name}
+						</StyledTableCell>
+						<StyledTableCell align='center'>{row.email}</StyledTableCell>
+						<StyledTableCell align='right'>{row.score}</StyledTableCell>
+						</StyledTableRow>	
 					))}
+				</Link>
 				</TableBody>
 			</Table>
 		</TableContainer>

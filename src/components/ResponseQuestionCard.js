@@ -1,13 +1,10 @@
 import React, {useState,useEffect} from "react";
-import firebase from '../firebase/firebase'
 
 const ResponseQuestionCard = (props)=>{
 
     const {question,index,quizCode,selectedOptions,userCode} = props
     const [message,setMessage] = useState()
     // const [selectedOptions, setSelectedOptions] = useState([])
-    console.log("questions got the component",question)
-    console.log("selectedOptions got the component",selectedOptions)
 
     useEffect(()=>{
         selectedOptions.map((data) =>{
@@ -17,26 +14,26 @@ const ResponseQuestionCard = (props)=>{
         })
     },[selectedOptions])
 
-
-    const getClass = (val,qindex) => {
-        let checking = val.isCorrect
+    const getChecked = (val,qindex) =>{
+        let v = false
         for(let i = 0; i<selectedOptions.length ; i++){
-
-            if(qindex === selectedOptions[i].id){
-                if(val.id === selectedOptions[i].optionId){
-                    return (checking === "true" ? 'label green bold' : 'label red bold')
-                }
-                else{
-                    return (checking === "true" ? 'label green': 'label red')
-                }
-
-            }
+            selectedOptions[i].selectedOp.forEach(op => {
+                 if(op === val.text){
+                        v = true
+                    }
+            });
         }
+        return v
     }
 
-    // const getText = () =>{
-    //     console.log("heyaa")
-    // }
+    const getClass = (val) => {
+        let checking = val.isCorrect
+        if(checking){
+            return 'label green bold'
+        }else{
+            return 'label'
+        }
+    }
 
     return(
         
@@ -59,7 +56,8 @@ const ResponseQuestionCard = (props)=>{
                             <input
                                 type='radio'
                                 name={`option${index}`}
-                                disabled
+                                checked={getChecked(option,question.id)}
+                                // disabled
                             />
                         ) : (
                             <input

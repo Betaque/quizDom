@@ -44,35 +44,6 @@ const App = () => {
 			  console.log(er)
 			})
 		  }
-		// const createUserInDB = async () => {
-		// 	if (user.uid)
-		// 	console.log("user",firebase.auth().currentUser.metadata)
-		// 		if (
-		// 			firebase.auth().currentUser.metadata.lastSignInTime === firebase.auth().currentUser.metadata.creationTime
-		// 		) {
-		// 			try {
-		// 				// let data = {uid:user.uid, name: user.name , email: user.email}
-		// 				// await axios.post(`${process.env.REACT_APP_HOST}/API/users/create`, data)
-		// 				// .then((response => console.log("response",response)))
-						
-		// 				await fetch(`${process.env.REACT_APP_HOST}/API/users/create`, {
-		// 					method: 'POST',
-		// 					body: JSON.stringify({
-		// 						uid: user.uid,
-		// 						name: user.name,
-		// 						email: user.email,
-		// 					}),
-		// 					headers: {
-		// 						'Content-Type': 'application/json',
-		// 					},
-		// 				})
-		// 				console.log('posted')
-		// 			} catch (error) {
-		// 				console.log('User Creation Error: ', error)
-		// 			}
-		// 		}
-		// }
-		// createUserInDB()
 	}, [])
 	// console.log("user",user.uid)
 	return (

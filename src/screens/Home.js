@@ -4,7 +4,7 @@ import Signup from "../components/Auth/Signup"
 // import './Auth.css'
 import store from '../store/index'
 import axios from "axios"    
-import {Navigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 import './Home.css'
 // import { StyledFirebaseAuth } from 'react-firebaseui'
 // import firebase from '../firebase/firebase'
@@ -12,7 +12,7 @@ import LoadingScreen from './LoadingScreen'
 
 const Home = ({ setUser }) => {
 	const [loading, setLoading] = useState(true)
-	// let navigate = useNavigate();
+	let navigate = useNavigate();
 
     const [state, setState] = useState('signin')
 
@@ -66,7 +66,9 @@ const Home = ({ setUser }) => {
                     token: res.data.token
                 });
                 console.log(store.getState())
-				return <Navigate push to={'./'} />
+				navigate('/')
+				navigate(0)
+				// return <navigate to={'./'} />
             }
         }).catch(err =>{
             console.log(err)

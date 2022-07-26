@@ -110,6 +110,7 @@ const AttemptQuiz = (props) => {
 					'Content-Type': 'application/json',
 				},
 			})
+			console.log("attempted questions",attemptedQuestions)
 			const body = await res.json()
 			// setResult(body)
 			// setShowModal(true)
@@ -120,6 +121,8 @@ const AttemptQuiz = (props) => {
 			console.log('Error Submitting quiz', e)
 		}
 	}
+
+	console.log("attempted questions",attemptedQuestions)
 
 
 	if (loading) return <LoadingScreen />
@@ -200,7 +203,7 @@ const AttemptQuiz = (props) => {
 							</SettingsContext.Provider>
 							</div>
 							{questions.map((question, index) => (
-								<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} />
+								<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} setAttemptedQuestions={setAttemptedQuestions} />
 							))}
 							{/* <button onChange={submitQuiz} value={submission}  style={{display: "none"}}></button> */}
 							<button className='button wd-200' onClick={submitQuiz} 

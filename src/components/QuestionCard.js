@@ -130,6 +130,7 @@ const QuestionCard = (props) =>{
 		temp[index].selectedOptions = options
 		const value = temp[index]
 		console.log("t2",temp[index])
+		// props.setAttemptedQuestions = temp[index]
 		try {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
 				method: 'POST',

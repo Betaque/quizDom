@@ -115,6 +115,7 @@ Router.post('/fetchResponse', (req,res) =>{
 // Submit the quiz
 Router.post('/submit', (req, res) => {
 	const quiz = req.body
+	console.log("submitting quiz",quiz)
 	console.log("hii")
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
 	// console.log("quiz response",quiz)

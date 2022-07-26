@@ -272,6 +272,7 @@ submitQuiz = async (submittedQuiz, res) => {
 			const quiz = await cursor.toArray()
 			const score = Evaluate(quiz[0].questions, submittedQuiz.questions)
 			// const reply = Answers(quiz[0].questions, submittedQuiz.questions)
+			console.log("Score",score)
 			res.status(200).json({ score })
 
 			// Update in quizzes responses

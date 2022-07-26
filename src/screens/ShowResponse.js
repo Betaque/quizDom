@@ -4,6 +4,7 @@ import ResponseQuestionCard from '../components/ResponseQuestionCard'
 import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import { useParams} from 'react-router-dom'
+import axios from "axios"
 
 require('dotenv').config()
 
@@ -18,7 +19,7 @@ const ShowQuiz = () => {
 	const [responses, setResponses] = useState([])
 	const [quizTitle, setQuizTitle] = useState('')
 	const [attemptedQuestions, setAttemptedQuestions] = useState([])
-	const uid = firebase.auth().currentUser.uid
+	const [uid,setUid] = useState()
 	const [loading, setLoading] = useState(true)
     const [selectedOptions, setSelectedOptions] = useState([])
 
@@ -27,7 +28,23 @@ const ShowQuiz = () => {
 
 	useEffect(() => {
 
-		// Fetching the Student Details
+		const getUid = () =>{
+			if(localStorage.getItem('_ID')){
+				let id = localStorage.getItem('_ID')
+				axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+					headers: {
+						authorization: localStorage.getItem('JWT_PAYLOAD')
+					  }
+				}).then(res => {
+					setUid(res.data.user)
+				}).catch((er) => {
+				  console.log(er)
+				})
+			  }
+		}
+			getUid()
+
+			  // Fetching the Student Details
 		const getResponses = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/responses`, {
 				method: 'POST',
@@ -37,7 +54,7 @@ const ShowQuiz = () => {
 				},
 			})
 			const result = await res.json()
-			console.log("resssuulltt",result)
+			// console.log("resssuulltt",result)
 			setResponses(result.finalResponse)
 			setLoading(false)
 		}
@@ -50,7 +67,7 @@ const ShowQuiz = () => {
 					method: 'GET'
 				})
 				const quizData = await res.json()
-				console.log("quizDataaaa",quizData)
+				// console.log("quizDataaaa",quizData)
 				// setLoading(false)
 				if (quizData.error) console.log("quizData.error",quizData.error)
 				// setQuizTitle(quizData.error)
@@ -63,7 +80,7 @@ const ShowQuiz = () => {
 								textAns: question.textAns
 							}
 						})
-						console.log("temp",temp)
+						// console.log("temp",temp)
 					setSelectedOptions(temp)
 				}
 			}
@@ -80,13 +97,13 @@ const ShowQuiz = () => {
 			})
 
 			const quizData = await res.json()
-			console.log("quizData for the questions",quizData)
+			// console.log("quizData for the questions",quizData)
 			setLoading(false)
 			if (quizData.error) setQuizTitle(quizData.error)
 			else {
 				setQuizTitle(quizData.title)
 				setQuestions(quizData.questions)
-				console.log(questions)
+				// console.log(questions)
 				const temp = quizData.questions.map((question) => {
 					return {
 						id: question.id,
@@ -100,10 +117,13 @@ const ShowQuiz = () => {
 		}
 		fetchQuiz()
 		fetchResponse()
-		console.log("final response",responses)
+		// console.log("final response",responses)
+
+
+		
 		}, [quizCode, userCode, uid])
 
-		console.log("questions",questions)
+		// console.log("questions",questions)
 	
 	if (loading) return <LoadingScreen />
 		return (
