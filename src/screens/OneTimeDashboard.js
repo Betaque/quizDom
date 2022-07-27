@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+// import { Navigate } from 'react-router-dom'
+import {useNavigate} from "react-router-dom"
 import './OneTimeDashboard.css'
 require('dotenv').config()
 
 const OneTimeDashboard = ({ user }) => {
 	const [path, setPath] = useState('')
+	let navigate = useNavigate();
 	// Path Redirection
 	const onDashboard = () => setPath('/dashboard')
 	const onCreateQuiz = () => setPath('/create-quiz')
 	const onJoinQuiz = () => setPath('/join-quiz')
 
-	if (path.length > 0) return <Navigate push to={path} />
+
+	if (path.length > 0) {
+		navigate(`${path}`)
+		navigate(0)
+	}
+	// <Navigate push to={path} />
 
 	return (
 		<div className='one-time-dashboard'>

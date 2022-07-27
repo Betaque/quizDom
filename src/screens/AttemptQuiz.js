@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link , Navigate , useParams} from 'react-router-dom'
+import { Link , useNavigate , useParams} from 'react-router-dom'
 import LoadingScreen from './LoadingScreen'
 // import AttemptedModal from './AttemptedModal'
 import Timer from "../components/Timer";
@@ -28,20 +28,18 @@ const AttemptQuiz = (props) => {
 	const [showSettings, setShowSettings] = useState(false);
 	// setting the exam time
   	const [workMinutes, setWorkMinutes] = useState(1);
+	let navigate = useNavigate();
 	// let submission = false
 
 	useEffect(() => {
 			try{
 				if(localStorage.getItem('_ID')){
-					console.log("found the id")
 					let id = localStorage.getItem('_ID')
-					console.log("ID",id)
 					axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
 						headers: {
 							authorization: localStorage.getItem('JWT_PAYLOAD')
 						  }
 					}).then(res => {
-						console.log("res from localstorage",res)
 						setUid(res.data.user.uid)
 					}).catch((er) => {
 					  console.log(er)
@@ -56,10 +54,8 @@ const AttemptQuiz = (props) => {
 						},
 					})
 					const quizData = await res.json()
-					console.log("quizData",quizData)
 					setLoading(false)
 					if (quizData.error) {
-						console.log("errrorrr")
 						setQuizTitle(quizData.error)
 					}
 					else {
@@ -74,7 +70,6 @@ const AttemptQuiz = (props) => {
 								selectedOptions: [],
 							}
 						})
-						console.log("temp",temp)
 						setAttemptedQuestions(temp)
 					}
 				}
@@ -87,16 +82,18 @@ const AttemptQuiz = (props) => {
 		
 	}, [quizCode, uid])
 
-	// console.log("quizTime",quizTime)
 
 	
 
 
-	if(redirect) return <Navigate push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
+	if(redirect) {
+		navigate(`/result/${quizCode}` , {state: {uid: uid}})
+		navigate(0)
+	}
+	// <Navi push to={{pathname:`/result/${quizCode}`, state: {uid: uid}}} />
 
 	const submitQuiz = async () => {
 		// send attemped Questions to backend
-		console.log("Enteredd the submission")
 		try {
 			setActive(true)
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/submit`, {
@@ -110,11 +107,7 @@ const AttemptQuiz = (props) => {
 					'Content-Type': 'application/json',
 				},
 			})
-			console.log("attempted questions",attemptedQuestions)
-			const body = await res.json()
-			// setResult(body)
-			// setShowModal(true)
-			console.log('res body : ', body)
+			await res.json()
 			setRedirect(true)
 			
 		} catch (e) {
@@ -128,7 +121,6 @@ const AttemptQuiz = (props) => {
 	if (loading) return <LoadingScreen />
 
 	const submission = () =>{
-		console.log("Entered the sibmission function")
 		setShowModal(true)
 	}
 	if(showModal){
@@ -205,17 +197,11 @@ const AttemptQuiz = (props) => {
 							{questions.map((question, index) => (
 								<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} setAttemptedQuestions={setAttemptedQuestions} />
 							))}
-							{/* <button onChange={submitQuiz} value={submission}  style={{display: "none"}}></button> */}
 							<button className='button wd-200' onClick={submitQuiz} 
-							// disabled={checkBtn()}
 							>
 								Submit
 							</button>
-							{/* <AttemptedModal
-								result={result}
-								showModal={showModal}
-								totalScore={questions.length}
-							/> */}
+							
 						</div>
 					</div>
 					: ''

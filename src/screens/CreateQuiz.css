@@ -23,6 +23,10 @@
 	width: 90%;
 	flex-direction: column;
 }
+.quiz-header .detail p{
+	padding-top: 5px;
+	font-size: 20px;
+}
 #quiz-title {
 	border: var(--secondary) 1px solid;
 	margin: 10px;

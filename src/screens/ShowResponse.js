@@ -1,7 +1,6 @@
 import React , { useEffect,useState } from 'react'
 import ResponseQuestionCard from '../components/ResponseQuestionCard'
 // import { useLocation } from 'react-router-dom'
-import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import { useParams} from 'react-router-dom'
 import axios from "axios"
@@ -36,14 +35,13 @@ const ShowQuiz = () => {
 						authorization: localStorage.getItem('JWT_PAYLOAD')
 					  }
 				}).then(res => {
-					setUid(res.data.user)
+					setUid(res.data.user.uid)
 				}).catch((er) => {
 				  console.log(er)
 				})
 			  }
 		}
 			getUid()
-
 			  // Fetching the Student Details
 		const getResponses = async () => {
 			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/responses`, {
@@ -54,9 +52,11 @@ const ShowQuiz = () => {
 				},
 			})
 			const result = await res.json()
-			// console.log("resssuulltt",result)
-			setResponses(result.finalResponse)
-			setLoading(false)
+			if(result.finalResponse){
+				setResponses(result.finalResponse[0])
+				setLoading(false)
+			}
+			
 		}
 		getResponses()
 
@@ -67,8 +67,6 @@ const ShowQuiz = () => {
 					method: 'GET'
 				})
 				const quizData = await res.json()
-				// console.log("quizDataaaa",quizData)
-				// setLoading(false)
 				if (quizData.error) console.log("quizData.error",quizData.error)
 				// setQuizTitle(quizData.error)
 				else {
@@ -80,7 +78,6 @@ const ShowQuiz = () => {
 								textAns: question.textAns
 							}
 						})
-						// console.log("temp",temp)
 					setSelectedOptions(temp)
 				}
 			}
@@ -97,13 +94,11 @@ const ShowQuiz = () => {
 			})
 
 			const quizData = await res.json()
-			// console.log("quizData for the questions",quizData)
 			setLoading(false)
 			if (quizData.error) setQuizTitle(quizData.error)
 			else {
 				setQuizTitle(quizData.title)
 				setQuestions(quizData.questions)
-				// console.log(questions)
 				const temp = quizData.questions.map((question) => {
 					return {
 						id: question.id,
@@ -117,24 +112,22 @@ const ShowQuiz = () => {
 		}
 		fetchQuiz()
 		fetchResponse()
-		// console.log("final response",responses)
 
 
 		
 		}, [quizCode, userCode, uid])
 
-		// console.log("questions",questions)
 	
 	if (loading) return <LoadingScreen />
 		return (
 			<div id='main-body'>
 				<div id='create-quiz-body'>
 					<div className='quiz-header'>
-						<h2>{quizTitle}</h2>
-						{/* <div className='name'>
-								<p><strong>Name: {responses[0].name}</strong></p>
-								<p><strong>Score: {responses[0].score}</strong></p>
-							</div> */}
+						<h2>Quiz Name : {quizTitle}</h2>
+						<div className='detail'>
+								<p className='detail-name'><strong>Name: </strong>{responses.name}</p>
+								<p className='detail-score'><strong>Score: </strong>{responses.score}</p>
+							</div>
 					</div>
 					{questions.map((question, index) => (
 								<ResponseQuestionCard question={question} index={index} quizCode={quizCode} selectedOptions={selectedOptions} userCode={userCode} />

@@ -1,8 +1,4 @@
 const AnswerQuiz = (quizQuestions, attemptedQuestions) => {
-    // vals.forEach((val)=>{
-    //     console.log("val",val.selectedOptions)
-    // })
-    // let score = 0
     let answers = []
     attemptedQuestions.forEach((question) => {
 		const realQues = quizQuestions.find((x) => x.id === question.id)
@@ -13,13 +9,13 @@ const AnswerQuiz = (quizQuestions, attemptedQuestions) => {
 			// if (correctOptions.length < question.selectedOptions.length) {
 				question.selectedOptions.forEach((selectedOp) => {  
                     let id = realQues.id
-                    console.log("selectedOp",selectedOp)  
+                    // console.log("selectedOp",selectedOp)  
                     answers.push({id,selectedOp})
                 })
 			// }
 		} else if (realQues.optionType === 'radio') {
 			question.selectedOptions.forEach((selectedOp) => {
-                console.log("selectedOp",selectedOp)   
+                // console.log("selectedOp",selectedOp)   
                 let id = realQues.id
                 answers.push({id,selectedOp})
             })

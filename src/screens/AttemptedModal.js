@@ -39,7 +39,6 @@ const AttemptedModal = (user) => {
 		const getInfo = async () =>{
 			try{
 				const modal = await axios.post(`${process.env.REACT_APP_HOST}/API/quizzes/modals`,{user,qid})
-				console.log(modal.data.val)
 				let checking = modal.data.val
 				if(checking){
 					setText("Your quiz have been submitted Successfully !!!")
@@ -53,8 +52,6 @@ const AttemptedModal = (user) => {
 			}
 			
 		}
-		console.log("userrrrrr",user)
-		console.log("Match", qid)
 		getInfo()
 		// setOpen(showModal)
 	}, [qid,user])

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+// import { Navigate } from 'react-router-dom'
+import {useNavigate} from "react-router-dom"
 import './CreateQuiz.css'
 import AddQuestionModal from '../components/AddQuestionModal'
 import QuestionsTable from '../components/QuestionsTable'
@@ -20,7 +21,7 @@ const CreateQuiz = ({
 	const [access, setAccesss] = useState(true)
 	const [loading, setLoading] = useState('stop')
 	const [quizCode, setQuizCode] = useState(null)
-	console.log("user from create quuiz",user)
+	let navigate = useNavigate();
 	const addQuestionHandle = (title, optionType, options) => {
 		const arr = [...questionArray]
 		arr.push({ title, optionType, options })
@@ -45,10 +46,8 @@ const CreateQuiz = ({
 			alert('Please add any questions.')
 			return
 		}
-		console.log('Quiz Creation Starts...')
 		setLoading('start')
 		try {
-			console.log("question array", questionArray)
 			const result = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/create`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -61,18 +60,17 @@ const CreateQuiz = ({
 					'Content-Type': 'application/json'
 				}
 			})
-			console.log('Quiz posted ! ')
-			console.log("result",result)
 			const body = await result.json()
-			console.log('Quiz Code : ', body.quizId)
 			setQuizCode(body.quizId)
 		} catch (e) {
-			console.dir(e)
-			console.log('Quiz creation error : ', e)
 			setLoading('error')
 		}
 	}
-	if (quizCode) return <Navigate push to={`/created-succesfully/${quizCode}`} />
+	if (quizCode) {
+		navigate(`/created-succesfully/${quizCode}`)
+		navigate(0)
+	}
+	// <Navigate push to={`/created-succesfully/${quizCode}`} />
 
 	if (loading === 'start') return <LoadingScreen />
 

@@ -1,10 +1,11 @@
 import React, { useState} from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 import firebase from '../firebase/firebase'
 import Home from '../screens/Home'
 import { Icon } from '@material-ui/core'
 import axios from "axios"
+
 
 import {
 	CreateNewFolder,
@@ -15,10 +16,12 @@ import {
 	MenuRounded,
 } from '@material-ui/icons'
 import { useEffect } from 'react'
+import { replace } from 'formik'
 
 require('dotenv').config()
 
 function Sidebar() {
+	let navigate = useNavigate();
 	const [signOut, setSignOut] = useState(false)
 	const SidedbarData = [
 		{
@@ -55,12 +58,15 @@ function Sidebar() {
 				}).catch((er) => {
 				  console.log(er)
 				})
-			  
 		}
-		
 	})
 
-	if (signOut) return <Navigate to='/' />
+	if (signOut){ 
+		localStorage.removeItem("_ID")
+		localStorage.removeItem("JWT_PAYLOAD")
+		navigate("/" , {replace : true})
+		navigate(0)
+	}
 
 
 	return (
@@ -99,9 +105,6 @@ function Sidebar() {
 					<li className='nav-text sign-out'>
 						<button
 							onClick={() => {
-								console.log('clicked')
-								// setUser({})
-								firebase.auth().signOut()
 								setSignOut(true)
 							}}
 						>

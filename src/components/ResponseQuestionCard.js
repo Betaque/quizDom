@@ -63,7 +63,8 @@ const ResponseQuestionCard = (props)=>{
                             <input
                                 type='checkbox'
                                 name='option'
-                                disabled
+                                checked={getChecked(option,question.id)}
+                                // disabled
                             />
                         )}
                         <label className={getClass(option,question.id)} style={{ padding: '0px 5px' }}>

@@ -21,7 +21,6 @@ module.exports.loginValidator = (data) =>{
 
 module.exports.registerValidator = (data) =>{
     const errors = {};
-    console.log("data from validation",data)
 
     data.email = !(isEmpty(data.email)) ? data.email: ''
     data.password = !(isEmpty(data.password)) ? data.password: ''

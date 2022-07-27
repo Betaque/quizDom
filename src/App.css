@@ -71,6 +71,21 @@ input[type='radio'] {
 	border-bottom: 2px solid var(--light-shadow);
 }
 
+.auth-wrapper .sign-up-wrapper .input-wrapper p.err , .input-wrapper p.err{
+    color: #ef457e;
+    font-size: 15px ;
+	text-align: left;
+	margin-top: 10px;
+}
+
+.form p.m-err{
+	/* color: #d81e5b; */
+	color: #f1e7ea;
+    font-size: 18px ;
+	text-align: center;
+	padding-top: 10px;
+}
+
 /* input[type='text']  */
 .input-text:focus {
 	transition: all 0.5s ease;

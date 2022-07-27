@@ -6,12 +6,9 @@ const EvaluateQuiz = (quizQuestions, attemptedQuestions) => {
 		const realQues = quizQuestions.find((x) => x.id === question.id)
 		const correctOptions = realQues.options.filter((op) => op.isCorrect)
 		// Error for Quiz with no correct answers
-		console.log("correctOptions",correctOptions)
 		if (correctOptions.length < 1) return 0
-		// console.log("real questions",realQues)
 
 		const attemptedOptions = question.selectedOptions
-		// console.log("attempted questions",attemptedOptions)
 		if (realQues.optionType === 'check') {
 			const weightage = 1 / correctOptions.length
 			let qScore = 0
@@ -24,13 +21,9 @@ const EvaluateQuiz = (quizQuestions, attemptedQuestions) => {
 				if (correct !== undefined) qScore += weightage
 			})
 			qScore < 0 ? (score += 0) : (score += qScore)
-			// console.log('Score : ', score)
 		} else if (realQues.optionType === 'radio') {
-			console.log("Inside the radio part")
 			if (correctOptions[0].text === attemptedOptions[0]) {
-				// console.log("inside se pehle vaala score",score)
 				score++
-				// console.log("answer correct hai",score)
 			}
 		}
 	})
@@ -113,6 +106,5 @@ const q2 = [
 	},
 ]
 
-// console.log(EvaluateQuiz(q1, q2))
 
 module.exports = EvaluateQuiz

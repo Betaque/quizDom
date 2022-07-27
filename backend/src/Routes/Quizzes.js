@@ -8,15 +8,13 @@ const timer = require('../Algorithms/TimerSystem')
 // Middleware
 
 const validateUser = async (req,res,next) =>{
-	console.log("validating user")
-	console.log("req.bodt",req.body)
-	req.body.uid == "62de99786d9327b06a231750" ? next() : res.json({"message":"unauthorized"})  
+	// console.log("req.body.uid",req.body)
+	req.body.uid === "62e13b4c15b4a5a7208dc2c9" ? next() : res.json({"message":"unauthorized"})  
 }
 
 
 // Get Quiz Data
 Router.post('/join', (req, res) => {
-	console.log("requestssssssssss",req.body)
 	const { quizId, uid } = req.body
 	if (!quizId || !uid)
 		return res.status(500).json({ error: 'Incomplete Parameters' })
@@ -33,7 +31,6 @@ Router.post('/join', (req, res) => {
 				})
 
 			const quizData = await cursor.toArray()
-			// console.log("quizData",quizData)
 			if (!quizData[0].isOpen)
 				res.status(500).json({ error: 'ERR:QUIZ_ACCESS_DENIED' })
 			else {
@@ -42,7 +39,6 @@ Router.post('/join', (req, res) => {
 				})
 
 				const quiz2 = await cursor2.toArray()
-				// console.log('quiz 2 : ', quiz2)
 				if (quiz2[0]) {
 					console.log('in quiz already attempted')
 					res.status(200).json({
@@ -73,7 +69,6 @@ Router.post('/getres', (req,res) =>{
 					})
 	
 				const quizData = await cursor.toArray()
-				console.log("quizDataaaaaaaaaaa",quizData)
 				const cursor2 = db.collection('users').find({
 					$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
 				})
@@ -98,9 +93,7 @@ Router.post('/fetchResponse', (req,res) =>{
 				const cursor = db
 					.collection('responses')
 					.find({ _id: quizId, uid: uid })
-				// console.log("cursor",cursor)
 				const quizData = await cursor.toArray()
-				// console.log("qsss",quizData[0].responses)
 				// const cursor2 = db.collection('users').find({
 				// 	$and: [{ uid }, { attemptedQuiz: ObjectId(quizId) }],
 				// })
@@ -115,10 +108,7 @@ Router.post('/fetchResponse', (req,res) =>{
 // Submit the quiz
 Router.post('/submit', (req, res) => {
 	const quiz = req.body
-	console.log("submitting quiz",quiz)
-	console.log("hii")
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
-	// console.log("quiz response",quiz)
 	DB.submitQuiz(quiz, res)
 })
 
@@ -126,20 +116,13 @@ Router.post('/submit', (req, res) => {
 
 Router.post('/update', (req,res) =>{
 	const update = req.body
-	// if(update.opType === 'text'){
-	// 	console.log("update text")
-	// 	DB.updateText(update, res)
-	// 	return null
-	// }
 	console.log("update",update)
 	DB.updateQuiz(update, res)
 })
 
 // Create Quiz
 Router.post('/create', validateUser, (req, res) => {
-	console.log("hellloooooooooooo")
 	const quiz = req.body
-	// console.log(quiz)
 	if (!quiz) return res.status(500).json({ error: 'Incomplete Parameters' })
 
 	quiz.questions.forEach((question, i) => {
@@ -183,7 +166,6 @@ Router.post('/edit', validateUser, (req, res) => {
 })
 
 Router.post('/responses', validateUser, (req, res) => {
-	console.log("inside the responses")
 	const reqBody = req.body
 	console.log('Req Body : ', reqBody)
 	DB.getResponses(reqBody, res)
@@ -194,15 +176,13 @@ Router.get('/responses/:quizid/:uid', (req,res) =>{
 	DB.getQuizResponse(quizid,uid,res)
 })
 Router.get('/remaining_time', (req,res) =>{
-	let time = {"minute": 1, "seconds": 0}
+	let time = {"minute": 5, "seconds": 0}
 	timer.evaluate(time)
 	res.json({time})
 })
 
 Router.post('/modals', (req,res) =>{
 	const {user,qid} = req.body
-	console.log("Something is going to happen soon!!!")
-	console.log(user,qid)
 	DB.getModals(user,qid,res)
 })
 

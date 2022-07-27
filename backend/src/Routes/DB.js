@@ -17,7 +17,6 @@ const DBStart = async () => {
 	})
 	console.log('DB Connected Successfully.')
 	db = client.db('quizDom-bq')
-	// console.log(db.collection('quizzes'))
 }
 DBStart()
 
@@ -35,16 +34,12 @@ const withDB = async (operations, res) => {
 const createUser = async (data,res) => {
 	try{
 		const {name , collegename , email , password , createdAt , deleted } = data
-		console.log("creating a user")
 		const val = data._id
 		const uid = val.toString()
-		console.log("uid from createUser",uid)
 		console.log("createUser",data)
 		await withDB(async (db) => {
-			const user = await db.collection('users').findOne({ uid: uid })
-			// console.log(user)
+			const user = await db.collection('users').findOne({ email: email })
 			if (!user) {
-				console.log("Entered creating user")
 				const result = await db.collection('users').insertOne({
 					uid,
 					name , 
@@ -91,7 +86,6 @@ findUserUid = async (id,res) =>{
 	try{
 		await withDB(async(db) =>{
 			const user = await db.collection('users').findOne({uid: id})
-			console.log("user from the find user",user)
 			res.status(200).json({message: "Found User", success: true, user: user})
 		})
 	}catch{
@@ -103,19 +97,13 @@ createQuiz = async (quiz, res) => {
 	try {
 		await withDB(async (db) => {
 			quiz['responses'] = []
-			console.log("responses from the create quiz db",quiz)
 			const result = await db.collection('quizzes').insertOne(quiz)
 			res.status(200).json({
 				message: 'Quiz created successfully',
 				quizId: result.insertedId
 			})
-			console.log('quiz ID', result.insertedId)
 			console.log("quiz uid",quiz.uid)
-			// const query = { uid: new Object(quiz.uid) }
-			// console.log("query",query)
-			// const addQuiz = {
-			// 	$push: { createdQuiz: result.insertedId }
-			// }
+
 			const val = await db.collection('users').updateOne(
 				{uid : quiz.uid}, 
 				{
@@ -136,7 +124,6 @@ const updateQuiz = async (updatedQuiz,res) =>{
 	withDB(async (db) => {
 		try {
 		// Check whether the user has already submitted the Quiz
-			console.log("updatedQuiz",updatedQuiz)
 			const validationCursor = db.collection('users').find({
 				$and: [
 					{ uid: updatedQuiz.uid },
@@ -151,8 +138,8 @@ const updateQuiz = async (updatedQuiz,res) =>{
 					error: 'ERR:QUIZ_ALREADY_ATTEMPTED'
 				})
 			}
+			
 			console.log("updatedQuiz",updatedQuiz)
-			// console.log("optionsId",updatedQuiz.optionId)
 			const id = updatedQuiz.questions.id
 			const optionId = updatedQuiz.optionId
 			
@@ -163,28 +150,46 @@ const updateQuiz = async (updatedQuiz,res) =>{
 			}
 			const vid = await db.collection('responses').find({_id:updatedQuiz.quizId})
 			const quiz = await vid.toArray()
-			console.log("length",quiz[0])
+			if(!updatedQuiz.optionId){
+				if(quiz[0] != undefined){
+					let arrayResponses = quiz[0].responses
+						arrayResponses.forEach(async (arr) =>{
+							if(arr.id === updatedQuiz.questions){
+								await db.collection('responses').updateOne(
+									{ 
+										_id: updatedQuiz.quizId,
+										uid: updatedQuiz.uid
+									},
+									{
+										$pull: {
+											responses: { $in: [arr] }
+										}
+									}
+								) 
+							}
+						})
+				}
+				return res.json({value : "Going correct"})
+			}
+			console.log("------------------------------------------------------")
+
 			if(quiz[0] != undefined){
-				console.log("rrrrrrrr",quiz[0])
 				const arrayResponses = quiz[0].responses
 				function checkId(resp){
 					let item = resp.map((resps) => {
 						if(resps.id == updatedQuiz.questions.id){
-							console.log("found")
 							return true
 						}
 					}).filter(function(resps){return resps;})[0];
 					return item
 				}
 				const returnedVal = checkId(arrayResponses);
-				console.log("Returned Val",returnedVal)
 				if(returnedVal){
 					let i=0
-					console.log("This question exists")
-					console.log("arrayResponses",arrayResponses)
+					// console.log("This question exists")
+					// console.log("arrayResponses",arrayResponses)
 					arrayResponses.forEach(async (res) => {
 						if(res.id == updatedQuiz.questions.id){
-							console.log("idval",i)
 							let deletedOb = arrayResponses[i]
 							await db.collection('responses').updateOne(
 								{ 
@@ -201,7 +206,6 @@ const updateQuiz = async (updatedQuiz,res) =>{
 							if(updatedQuiz.opType === 'text'){
 								reply = {"id":id,"textAns": updatedQuiz.message}
 							}
-							console.log("rrrr",reply)
 							await db.collection('responses').updateOne(
 								{ 
 									_id: updatedQuiz.quizId,
@@ -256,8 +260,6 @@ submitQuiz = async (submittedQuiz, res) => {
 
 			const quizData = await validationCursor.toArray()
 			console.log({ quizData })
-			console.log("dbquiz",quizData)
-			console.log("submittedQuiz",submittedQuiz.questions)
 			// If the quiz is already submitted, DONOT submit it.
 			if (quizData[0]) {
 				console.log('in quiz already attempted')
@@ -315,9 +317,7 @@ const getModals = (user,qid,res) =>{
 	try{
 		withDB(async (db) =>{
 			const cursor = db.collection('quizzes').find({_id: new ObjectId(qid)})
-			// console.log("cursor",cursor)
 			const cursorData = await cursor.toArray()
-			// console.log("cursorData",cursorData)
 			const responses = cursorData[0].responses
 			let found = false
 			responses.forEach(resps => {
@@ -330,7 +330,6 @@ const getModals = (user,qid,res) =>{
 			});
 			
 			found ? res.json({val: true}) : res.json({val: false})
-			console.log("resppss",responses)
 		},res)
 	}
 	catch{
@@ -342,23 +341,19 @@ const getModals = (user,qid,res) =>{
 
 const getResponses = (obj, res) => {
 	withDB(async (db) => {
-		console.log("obj.uid",obj.uid)
 		const cursor = db
 			.collection('quizzes')
 			.find({ _id: new ObjectId(obj.quizCode), uid: obj.uid })
 			.project({ responses: 1 })
 		const cursorData = await cursor.toArray()
 		const responses = cursorData[0].responses
-		console.log("responses from db",responses)
 		let uidList = responses.map((response) => response.uid)
 		console.log(uidList)
 		const cursor2 = db
 			.collection('users')
 			.find({ uid: { $in: uidList } })
 			.project({ uid: 1, name: 1, email: 1 })
-
 		const cursor2Data = await cursor2.toArray()
-		console.log("cursor 2",cursor2Data)
 		const finalResponse = []
 		cursor2Data.forEach((data) => {
 			let index = responses.findIndex((resp) => resp.uid === data.uid)
@@ -368,6 +363,7 @@ const getResponses = (obj, res) => {
 				score: responses[index].score
 			})
 		})
+		console.log("final response",finalResponse)
 		res.status(200).json({ finalResponse })
 	}, res)
 }
@@ -382,8 +378,6 @@ const getQuizResponse = (qid,uid,res) =>{
 			const cursorData = await cursor.toArray()
 			const responses = cursorData[0].responses
 			const reply = responses.map((response) => response)
-			// console.log("Cursor Data Quiz Response", cursorData)
-			console.log("Reply",reply)
 			res.status(200).json(reply)
 		},res)
 	}

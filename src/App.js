@@ -21,6 +21,7 @@ import Responses from './screens/Responses'
 import ShowResponses from './screens/ShowResponse'
 import AttemptBlindQuiz from './screens/AttemptBlindQuiz'
 import AttemptedModal from './screens/AttemptedModal'
+import SignUp from "./components/Auth/Signup"
 // import Auth from './components/Auth/Auth'
 require('dotenv').config()
 
@@ -34,7 +35,6 @@ const App = () => {
 					authorization: localStorage.getItem('JWT_PAYLOAD')
 				  }
 			}).then(res => {
-				console.log("res from aapp",res)
 				setUser(res.data.user)
 				store.dispatch({
 					user: res.data.user,
@@ -45,11 +45,16 @@ const App = () => {
 			})
 		  }
 	}, [])
-	// console.log("user",user.uid)
 	return (
 		<div className='App'>
 			{!(user.uid) ? (
-				<Home setUser={setUser} />
+				<>
+					<Routes>
+						<Route path='/' element={<Home setUser={setUser} />} />
+						<Route path='/signup' element={<SignUp />} />
+					</Routes>
+				</>
+
 			) : (
 				<>
 					<div>

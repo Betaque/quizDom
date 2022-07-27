@@ -46,7 +46,6 @@ const QuestionCard = (props) =>{
 		
 					setqResps(arr)
 				}
-				// console.log("qresps",qResps)
 				
 			}
 			fetchResponses()
@@ -77,9 +76,7 @@ const QuestionCard = (props) =>{
 	};
 
 	const submitText = async(e) =>{
-		console.log("message is", message)
 		const temp = [...attemptedQuestions]
-		console.log("tem", temp[e])
 		const value = temp[e]
 		const opType = value.optionType
 		if(message.length < 1){
@@ -87,7 +84,7 @@ const QuestionCard = (props) =>{
 			return null
 		}
 		try {
-			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
+			await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
 				method: 'POST',
 				body: JSON.stringify({
 					uid,
@@ -100,10 +97,6 @@ const QuestionCard = (props) =>{
 					'Content-Type': 'application/json',
 				},
 			})
-			const body = await res.json()
-			// setResult(body)
-			// setShowModal(true)
-			console.log('res body : ', body)
 		} catch (e) {
 			console.log('Error Submitting quiz', e)
 		}
@@ -112,11 +105,8 @@ const QuestionCard = (props) =>{
 
     const handleOptionSelect = async (e, option,index,ops) => {
 		const temp = [...attemptedQuestions]
-        console.log("temp",temp)
-		console.log("sss",e.target)
 		const options = temp[index].selectedOptions
 		const opId = ops.id
-		// console.log("ops",ops)
 		if (!options.includes(option) && e.target.checked) {
 			if (attemptedQuestions[index].optionType === 'radio') options[0] = option
 			else options.push(option)
@@ -125,14 +115,12 @@ const QuestionCard = (props) =>{
 			const i = options.indexOf(option)
 			options.splice(i, 1)
 		}
-		console.log("options",options)
 		setisVal(options[0])
 		temp[index].selectedOptions = options
 		const value = temp[index]
-		console.log("t2",temp[index])
 		// props.setAttemptedQuestions = temp[index]
 		try {
-			const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
+			await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
 				method: 'POST',
 				body: JSON.stringify({
 					uid,
@@ -144,23 +132,30 @@ const QuestionCard = (props) =>{
 					'Content-Type': 'application/json',
 				},
 			})
-			const body = await res.json()
-			// setResult(body)
-			// setShowModal(true)
-			console.log('res body : ', body)
 		} catch (e) {
 			console.log('Error Submitting quiz', e)
 		}
 
 	}
 
-	// const clear = (e,option) =>{
-	// 	console.log("e",e)
-	// 	console.log("option",option)
-	// 	setisVal('')
-	// }
-
-
+	const clearFunction = async (e,question) =>{
+		console.log("question",question)
+		try {
+			await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/update`, {
+				method: 'POST',
+				body: JSON.stringify({
+					uid,
+					quizId: quizCode,
+					questions: question.id
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+		} catch (e) {
+			console.log('Error Submitting quiz', e)
+		}
+	}
 
     return (
         <div className='attempQuestionCard' key={index}>
@@ -181,6 +176,7 @@ const QuestionCard = (props) =>{
 						{question.optionType === 'radio' ? (
 							<input
 								type='radio'
+								className="radio-buttons"
 								name={`option${index}`}
 								id={question.title+option.text}
 								onChange={(e) =>{
@@ -190,16 +186,19 @@ const QuestionCard = (props) =>{
 								checked={
 									isVal === option.text || handleOptionChecked(option.text, index,question.id) ? true: false
 								}	
-								// onClick={clear()}				
 						/>
 											
 							) : (
 								<input
 									type='checkbox'
+									className="checkbox"
 									name='option'
-									onChange={(e) =>
-										handleOptionSelect(e, option.text, index)
+									onClick={(e) =>
+										handleOptionSelect(e, option.text, index,option)
 									}
+									checked={
+										isVal === option.text || handleOptionChecked(option.text, index,question.id) ? true: false
+									}	
 								/>
 							)}
 							<label className='label' style={{ padding: '0px 5px' }}>
@@ -207,6 +206,9 @@ const QuestionCard = (props) =>{
 								</label>
 							</div>
 							))}
+						</div>
+						<div className="clear-btn">
+									<button onClick={(e) => clearFunction(e,question)}>Clear</button>
 						</div>
 					</div>
     )

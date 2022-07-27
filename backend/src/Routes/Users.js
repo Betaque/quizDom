@@ -10,7 +10,6 @@ const { loginValidator , registerValidator} = require('../validators/validators'
 
 // Create User in DB
 Router.post('/create', (req, res) => {
-	console.log("entered")
 	const { uid, name, email } = req.body
 	if (!uid) return res.status(500).json({ error: 'Incomplete Parameters' })
 
@@ -21,21 +20,13 @@ Router.post('/create', (req, res) => {
 
 Router.post('/find', (req, res) => {
 	const {id} = req.body
-	console.log("iddd",id)
 	DB.findUser(id,res)
 })
-
-// Router.get('/find/:id', (req,res) =>{
-// 	const {id} = req.params
-// 	console.log("id from",id)
-// 	DB.findUserUid(id,res)
-// })
 
 // Get user Data
 Router.get('/:uid', (req, res) => {
 	const uid = req.params.uid
 	if (!uid) return res.status(500).json({ error: 'Incomplete Parameters' })
-	console.log("hiii")
 	try{
 		DB.withDB(async (db) => {
 			const createdCursor = await db
@@ -50,14 +41,11 @@ Router.get('/:uid', (req, res) => {
 					},
 				})
 			const createdQuiz = await createdCursor.toArray()
-			console.log("createdQuiz from users",createdQuiz)
 			const userCursor = await db.collection('users').find({ uid }).project({
 				attemptedQuiz: 1,
 			})
 			const userInfo = await userCursor.toArray()
-			console.log("user Info",userInfo)
 			if (userInfo) {
-				console.log("inside userInfo")
 				try{
 					const attemptedCursor = db
 					.collection('quizzes')
@@ -70,7 +58,6 @@ Router.get('/:uid', (req, res) => {
 						responses: { $elemMatch: { uid } },
 					})
 					const attemptedQuiz = await attemptedCursor.toArray()
-					// console.log(attemptedQuiz)
 					res.status(200).json({ createdQuiz, attemptedQuiz })
 				}catch{
 					res.status(200).json({ createdQuiz })
@@ -99,7 +86,7 @@ Router.post('/login', (req,res) =>{
 
         DB.getUser(email).then(user=>{ //finding an element from the data base using the mail id
             if(!user){ //if user does not exists
-                res.json({message: "Email does not exist", success: false});
+                res.json({message: "User does not exist", success: false});
             }else{
                 bcrypt.compare(password, user.password).then(success =>{ //if user exists then we compare the password provided and the password stored in the database
                     if(!success){
@@ -109,7 +96,6 @@ Router.post('/login', (req,res) =>{
                             id: user._id,
                             name: user.name
                         }
-                        console.log("process",process.env.APP_SECRET)
                         jwt.sign(payload, process.env.APP_SECRET, {expiresIn: 2155926},
                             (err,token) =>{
                                 res.json({
@@ -128,8 +114,7 @@ Router.post('/login', (req,res) =>{
 // For registering new user
 
 Router.post('/register', (req,res) => {
-    console.log("register")
-    console.log("data",req.body)
+    
     const {errors , isValid} = registerValidator(req.body);//registering validation
     if(!isValid){
         res.json({success: false, errors});
@@ -142,7 +127,6 @@ Router.post('/register', (req,res) => {
             password,
             createdAt: new Date()
         });
-        console.log(registerUser)
         bcrypt.genSalt(10, (err, salt) =>{ //generating the hash for the password
             bcrypt.hash(registerUser.password, salt, (hashErr, hash) =>{
                 if(err || hashErr){ //if any error occurred during this proccess

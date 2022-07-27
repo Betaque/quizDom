@@ -65,7 +65,7 @@ export default function AddQuestionModal({
 	}
 	const addQuestionCallBack = () => {
 		const tempArr = [...optionsArray]
-		if(optionType != 'text') {
+		if(optionType !== 'text') {
 			if (optionsRef.current.value.length !== 0) {
 				// For radio options, set all other options incorrect
 				if (optionType === 'radio' && checkBoxRef.current.checked)
@@ -107,7 +107,7 @@ export default function AddQuestionModal({
 	}
 
 	const addOption = () => {
-		if(optionType != 'text') if (optionsRef.current.value.length === 0) return
+		if(optionType !== 'text') if (optionsRef.current.value.length === 0) return
 
 		const arr = [...optionsArray]
 		if (
@@ -130,8 +130,6 @@ export default function AddQuestionModal({
 		setOptionsArray(arr)
 	}
 	const handleTypeChange = (e) => setOptionType(e.target.value)
-
-	console.log("option type",optionType)
 
 	const deleteHandler = (ind) => {
 		const temp = [...optionsArray]
@@ -273,7 +271,7 @@ export default function AddQuestionModal({
 								
 							</div>
 							{
-								optionType != 'text' ? 
+								optionType !== 'text' ? 
 								<input
 									type='submit'
 									className='add-btn'

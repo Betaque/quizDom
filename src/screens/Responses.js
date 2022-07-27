@@ -15,15 +15,12 @@ const Responses = () => {
 	useEffect(() => {
 		try{
 			if(localStorage.getItem('_ID')){
-				console.log("found the id")
 				let id = localStorage.getItem('_ID')
-				console.log("ID",id)
 				axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
 					headers: {
 						authorization: localStorage.getItem('JWT_PAYLOAD')
 					  }
 				}).then(res => {
-					console.log("res from localstorage",res)
 					setUid(res.data.user.uid)
 				}).catch((er) => {
 				  console.log(er)
@@ -31,7 +28,6 @@ const Responses = () => {
 			  }
 
 			  const getResponses = async () => {
-				console.log("uid from responses",uid)
 				const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/responses`, {
 					method: 'POST',
 					body: JSON.stringify({ quizCode: quizCode, uid }),
@@ -40,7 +36,6 @@ const Responses = () => {
 					},
 				})
 				const result = await res.json()
-				console.log("resssuulltt",result)
 				setResponses(result.finalResponse)
 				setLoading(false)
 			}
@@ -58,7 +53,6 @@ const Responses = () => {
 		
 	}, [quizCode, uid])
 
-	console.log("responses222",responses)
 	if (loading) return <LoadingScreen />
 	else
 		return (

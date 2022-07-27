@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import { Icon } from '@material-ui/core'
 import { AccountCircle } from '@material-ui/icons'
 const Appbar = ({ user, setUser }) => {
-	console.log("user",user)
 	return (
 		<div className='appbar'>
 			<div className='slider'>

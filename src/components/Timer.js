@@ -16,12 +16,10 @@ function Timer(props) {
   // const quizCode = props.data[0]
   // const uid = props.data[1]
 
-  // console.log("props",props.data)
   const secondsLeftRef = useRef(secondsLeft);
 
   function tick() {
     if (secondsLeftRef.current === 0) {
-          console.log("Completed")
           localStorage.removeItem("count_timer")
         }
     secondsLeftRef.current--;
@@ -49,61 +47,23 @@ function Timer(props) {
 
   
   useEffect(() => {
-    // let ans = false
-    // try{
-    //   // let ans = false
-    // const fetchQuiz = async ()=>{
-    //   // let ans = false
-    //   const res = await fetch(`${process.env.REACT_APP_HOST}/API/quizzes/join`, {
-    //     method: 'POST',
-    //     body: JSON.stringify({ quizId: quizCode, uid }),
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   })
-    //   const quizData = await res.json()
-    //   if(quizData.error){
-    //     console.log("quizData",quizData.error)
-    //     ans = true
-    //     console.log("ans",ans)
-    //   }
-    //   // return ans
-    // }
-
-    // fetchQuiz()
-    // }
-    // catch{
-    //   console.log("Some error occured")
-    // }
-    
-    // console.log("valll",ans)
-    
-    
     const run = async () =>{
       if(localStorage.getItem("count_timer")){
         let cval = await current_time()
-        console.log("current",cval)
         localStorage.setItem("count_timer",cval);
         secondsLeftRef.current = localStorage.getItem("count_timer");
   
       } else {
         let rval = await remaining_time()
-        console.log("rval",rval)
         secondsLeftRef.current = rval * 60;
-        console.log("secondsLeft",secondsLeftRef.current)
       }
     }
-
-    // if(!ans){
-      // console.log("ansss",ans)
       run()
       setSecondsLeft(secondsLeftRef.current);
     
     const interval = setInterval(() => {
       if (secondsLeftRef.current <= 0) {
-        console.log("Completed")
         localStorage.removeItem("count_timer")
-        // localStorage.clear("count_timer");
         setSubmission(true)
         return clearInterval(interval)
       }

@@ -5,7 +5,8 @@ import JoinedQuizCard from '../components/JoinedQuizCard'
 import LoadingScreen from './LoadingScreen'
 import CreateQuiz from './CreateQuiz'
 // import OneTimeDashBoard from './OneTimeDashboard'
-import { Navigate } from 'react-router-dom'
+// import { Navigate } from 'react-router-dom'
+import {useNavigate} from "react-router-dom"
 import axios from "axios"
 require('dotenv').config()
 
@@ -15,6 +16,7 @@ const UserDashboard = ({ user }) => {
 	const [loading, setLoading] = useState(true)
 	const [editQuiz, setEditQuiz] = useState([])
 	const [isValid, setIsValid] = useState(false)
+	let navigate = useNavigate();
 	useEffect(() => {
 		if (!user.uid) {
 			setLoading(false)
@@ -23,17 +25,13 @@ const UserDashboard = ({ user }) => {
 		
 		let validator = user.email
 		if(validator === 'verma071276@gmail.com'){
-			console.log("enter")
 			setIsValid(true)
 		}
 
 		const fetchQuizData = async () => {
 			const results = await axios.get(`${process.env.REACT_APP_HOST}/API/users/${user.uid}`)
-			console.log("results",results.data.createdQuiz)
 			if(results.data.createdQuiz) setCreatedQuizzes(results.data.createdQuiz)
 			if(results.data.attemptedQuiz) setAttemptedQuizzes(results.data.attemptedQuiz)
-			// if (quizData.user.createdQuiz) setCreatedQuizzes(quizData.user.createdQuiz)
-			// if (quizData.user.attemptedQuiz) setAttemptedQuizzes(quizData.user.attemptedQuiz)
 
 			setLoading(false)
 		}
@@ -79,12 +77,13 @@ const UserDashboard = ({ user }) => {
 		}
 	}
 
-	console.log("edit quiz",editQuiz)
 
 	if (loading) return <LoadingScreen />
 	
 	const validateRedirection = () =>{
-		return <Navigate exact={process.env.REACT_APP_HOST} />
+		navigate(`${process.env.REACT_APP_HOST}`)
+		navigate(0)
+		// return <Navigate exact={process.env.REACT_APP_HOST} />
 	}
 
 		if (editQuiz.length)

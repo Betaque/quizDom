@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+// import { Navigate } from 'react-router-dom'
+import {useNavigate} from "react-router-dom"
 import './JoinQuiz.css'
 
 const JoinQuiz = () => {
 	const [valid, setValid] = useState('false')
 	const [code, setCode] = useState('')
+	let navigate = useNavigate();
 
 	const handleJoinQuiz = () => {
 		if (code.length) setValid('attempt-quiz')
 	}
-	const handleJoinBlindQuiz = () => {
-		if (code.length) setValid('attempt-blind-quiz')
+	// const handleJoinBlindQuiz = () => {
+	// 	if (code.length) setValid('attempt-blind-quiz')
+	// }
+	if (valid !== 'false') {
+		navigate(`/${valid}/${code}`)
+		navigate(0)
 	}
-	if (valid !== 'false') return <Navigate push to={`/${valid}/${code}`} />
+	// return <Navigate push to={`/${valid}/${code}`} />
 	// if (valid === 'join-blind')
 	// 	return <Redirect push to={`attempt-blind-quiz/${code}`} />
 
@@ -36,9 +42,9 @@ const JoinQuiz = () => {
 				<button className='join-button' onClick={handleJoinQuiz}>
 					Join Quiz
 				</button>
-				<button className='join-button' onClick={handleJoinBlindQuiz}>
+				{/* <button className='join-button' onClick={handleJoinBlindQuiz}>
 					Join As a Blind
-				</button>
+				</button> */}
 			</div>
 		</div>
 	)

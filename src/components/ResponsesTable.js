@@ -46,15 +46,12 @@ export default function ResponsesTable({ responses }) {
 	useEffect(()=>{
 		try{
 			if(localStorage.getItem('_ID')){
-				console.log("found the id")
 				let id = localStorage.getItem('_ID')
-				console.log("ID",id)
 				axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
 					headers: {
 						authorization: localStorage.getItem('JWT_PAYLOAD')
 					  }
 				}).then(res => {
-					console.log("res from localstorage",res)
 					setUid(res.data.user.uid)
 				}).catch((er) => {
 				  console.log(er)
@@ -65,14 +62,12 @@ export default function ResponsesTable({ responses }) {
 			console.log("Some Error occured while finding the user")
 		}
 	})
-	console.log("responses from the response table",responses[0][0])
 	const params = useParams()
 	const classes = useStyles()
 	// const uid = firebase.auth().currentUser.uid
 	const val = responses[0]
 	const quizId = params.quizCode
 	const rows = val.map((resp) => createData(resp))
-	console.log("responses",responses)
 	return (
 		<TableContainer className={classes.paper} component={Paper}>
 			<Table className={classes.table} aria-label='customized table'>
