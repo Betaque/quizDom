@@ -51,6 +51,30 @@
 .add-btn:focus {
 	outline: none;
 }
+.clear-btn{
+	display: flex;
+	flex-direction: row-reverse;
+}
+.clear-btn button{
+	align-items: left;
+	display: inline-block;
+	text-align: left;
+    padding: 15px;
+    font-size: 15px;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    border-radius: 50px;
+    border: none;
+    background-image: var(--gradient);
+    color: var(--primary);
+}
+.clear-btn button:hover{
+	background-position: right center;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
 .op-text {
 	/* width: 200px; */
 	padding: 5px;

@@ -85,7 +85,7 @@ function Timer(props) {
 
   if(!submission){
     return (
-      <div>
+      <div className='timer'>
         <CircularProgressbar
           value={percentage}
           text={minutes + ':' + seconds}
@@ -100,8 +100,6 @@ function Timer(props) {
     props.handleChild(true)
     return null
   }
-  
-  
 }
 
 export default Timer;

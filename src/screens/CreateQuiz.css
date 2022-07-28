@@ -2,7 +2,7 @@
 
 #main-body {
 	display: flex;
-	flex-direction: column;
+	/* flex-direction: column; */
 	padding: 0 10%;
 }
 #create-quiz-body {
@@ -10,6 +10,7 @@
 	align-items: center;
 	display: flex;
 	flex-direction: column;
+	min-width: 85%;
 }
 .quiz-header {
 	padding: 20px;
@@ -106,13 +107,25 @@
 	text-decoration: none;
 	margin: 20px;
 }
+.timer{
+	position: fixed;
+	top: 0;
+	right: 3%;
+	max-width: 15%;
+}
+.timer .CircularProgressbar{
+	margin-top: 100px;
+}
 @media (max-width: 768px) {
 	#main-body {
-		padding: 1%;
+		padding: 4%;
 	}
 	.quiz-header {
 		margin-top: 20px;
 		width: 90%;
+	}
+	#main-body{
+		max-width: 85% !important;
 	}
 	.controls {
 		width: 100%;

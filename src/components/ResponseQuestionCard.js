@@ -2,17 +2,17 @@ import React, {useState,useEffect} from "react";
 
 const ResponseQuestionCard = (props)=>{
 
-    const {question,index,quizCode,selectedOptions,userCode} = props
+    const {question,index,selectedOptions} = props
     const [message,setMessage] = useState()
     // const [selectedOptions, setSelectedOptions] = useState([])
 
     useEffect(()=>{
         selectedOptions.map((data) =>{
             if(data.id  === question.id){
-                setMessage(data.textAns)
+                return setMessage(data.textAns)
             }
         })
-    },[selectedOptions])
+    },[selectedOptions, question])
 
     const getChecked = (val,qindex) =>{
         let v = false
@@ -63,7 +63,8 @@ const ResponseQuestionCard = (props)=>{
                             <input
                                 type='checkbox'
                                 name='option'
-                                checked={getChecked(option,question.id)}
+                                defaultChecked={getChecked(option,question.id)}
+                                
                                 // disabled
                             />
                         )}

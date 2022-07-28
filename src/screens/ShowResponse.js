@@ -67,8 +67,9 @@ const ShowQuiz = () => {
 					method: 'GET'
 				})
 				const quizData = await res.json()
-				if (quizData.error) console.log("quizData.error",quizData.error)
-				// setQuizTitle(quizData.error)
+				if (quizData.error) 
+				// console.log("quizData.error",quizData.error)
+				setQuizTitle(quizData.error)
 				else {
 					const temp = quizData.map((question) => {
 						return {

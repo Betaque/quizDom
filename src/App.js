@@ -52,6 +52,7 @@ const App = () => {
 					<Routes>
 						<Route path='/' element={<Home setUser={setUser} />} />
 						<Route path='/signup' element={<SignUp />} />
+						<Route path='*' element={<Home setUser={setUser}/>}/>
 					</Routes>
 				</>
 

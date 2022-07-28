@@ -25,6 +25,7 @@ const UserDashboard = ({ user }) => {
 		
 		let validator = user.email
 		if(validator === 'verma071276@gmail.com'){
+			console.log("heyaa")
 			setIsValid(true)
 		}
 
@@ -81,6 +82,7 @@ const UserDashboard = ({ user }) => {
 	if (loading) return <LoadingScreen />
 	
 	const validateRedirection = () =>{
+		console.log("inside validation")
 		navigate(`${process.env.REACT_APP_HOST}`)
 		navigate(0)
 		// return <Navigate exact={process.env.REACT_APP_HOST} />

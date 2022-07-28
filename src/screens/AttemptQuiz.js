@@ -115,7 +115,6 @@ const AttemptQuiz = (props) => {
 		}
 	}
 
-	console.log("attempted questions",attemptedQuestions)
 
 
 	if (loading) return <LoadingScreen />
@@ -182,18 +181,7 @@ const AttemptQuiz = (props) => {
 							<div className='quiz-header'>
 								<h2>{quizTitle}</h2>
 							</div>
-						<div>
-							<SettingsContext.Provider value={{
-								showSettings,
-								setShowSettings,
-								workMinutes,
-								setWorkMinutes
-							}}>
-
-								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submission() : ''} />}
-
-							</SettingsContext.Provider>
-							</div>
+							
 							{questions.map((question, index) => (
 								<QuestionCard question={question} index={index} quizCode={quizCode} attemptedQuestions={attemptedQuestions} setAttemptedQuestions={setAttemptedQuestions} />
 							))}
@@ -203,6 +191,16 @@ const AttemptQuiz = (props) => {
 							</button>
 							
 						</div>
+						<SettingsContext.Provider value={{
+								showSettings,
+								setShowSettings,
+								workMinutes,
+								setWorkMinutes
+							}}>
+
+								{showSettings ? <Settings /> : <Timer handleChild={(value) => value ? submission() : ''} />}
+
+							</SettingsContext.Provider>
 					</div>
 					: ''
 				}

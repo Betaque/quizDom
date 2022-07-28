@@ -59,7 +59,7 @@ const Home = ({ setUser }) => {
                     user: res.data.user,
                     token: res.data.token
                 });
-				navigate('/')
+				navigate('/' , {replace: true})
 				navigate(0)
             }else{
 				setMessage(res.data.message)
@@ -70,7 +70,7 @@ const Home = ({ setUser }) => {
     }
 
     let changeTab = () =>{
-		navigate('/signup')
+		navigate('/signup' , {replace: true})
 		navigate(0)
     }
 
