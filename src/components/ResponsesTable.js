@@ -64,7 +64,6 @@ export default function ResponsesTable({ responses }) {
 	})
 	const params = useParams()
 	const classes = useStyles()
-	// const uid = firebase.auth().currentUser.uid
 	const val = responses[0]
 	const quizId = params.quizCode
 	const rows = val.map((resp) => createData(resp))

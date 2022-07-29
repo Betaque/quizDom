@@ -1,4 +1,3 @@
-// import { useEffect, useContext } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import {useContext, useState, useEffect, useRef} from "react";
@@ -13,6 +12,7 @@ function Timer(props) {
   const settingsInfo = useContext(SettingsContext);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [submission, setSubmission] = useState(false)
+  const [uid , setUid] = useState()
   // const quizCode = props.data[0]
   // const uid = props.data[1]
 
@@ -47,6 +47,22 @@ function Timer(props) {
 
   
   useEffect(() => {
+    try{
+      if(localStorage.getItem('_ID')){
+        let id = localStorage.getItem('_ID')
+        axios.get(`${process.env.REACT_APP_HOST}/API/users/find/${id}`,{
+          headers: {
+            authorization: localStorage.getItem('JWT_PAYLOAD')
+            }
+        }).then(res => {
+          setUid(res.data.user.uid)
+        }).catch((er) => {
+          console.log(er)
+        })
+        }
+    }catch{
+      return null
+    }
     const run = async () =>{
       if(localStorage.getItem("count_timer")){
         let cval = await current_time()

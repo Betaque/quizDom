@@ -22,7 +22,7 @@ const SignUp = () =>{
         if(isMounted){
             setLoading(false)
         }
-    })
+    }, [])
 
     let signUp = (name, collegename, email , password) =>{
         axios.post(`${process.env.REACT_APP_HOST}/API/users/register`, {name,collegename,email, password}).then(res=> {
@@ -54,6 +54,7 @@ const SignUp = () =>{
 
     if(message){
         alert(message)
+        setMessage('')
     }
 
     return(

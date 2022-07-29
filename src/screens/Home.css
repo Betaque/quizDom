@@ -184,9 +184,6 @@
 }
 
 
-#firebaseui_container {
-	width: 100%;
-}
 @media (max-width: 900px) {
 	#Home {
 		flex-flow: column;

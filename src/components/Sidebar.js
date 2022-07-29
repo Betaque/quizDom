@@ -1,7 +1,6 @@
 import React, { useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Sidebar.css'
-import firebase from '../firebase/firebase'
 import Home from '../screens/Home'
 import { Icon } from '@material-ui/core'
 import axios from "axios"
@@ -16,7 +15,6 @@ import {
 	MenuRounded,
 } from '@material-ui/icons'
 import { useEffect } from 'react'
-import { replace } from 'formik'
 
 require('dotenv').config()
 

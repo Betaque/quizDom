@@ -176,7 +176,7 @@ const AttemptQuiz = (props) => {
 			<>
 				{
 					active ? 
-					<div id='main-body'>
+					<div id='main-body-attempt'>
 						<div id='create-quiz-body'>
 							<div className='quiz-header'>
 								<h2>{quizTitle}</h2>

@@ -2,15 +2,27 @@
 
 #main-body {
 	display: flex;
+	flex-direction: column;
+	padding: 0 10%;
+}
+#main-body-attempy{
+	display: flex;
 	/* flex-direction: column; */
 	padding: 0 10%;
 }
-#create-quiz-body {
+/* #create-quiz-body-attempt{
 	margin-top: 50px;
 	align-items: center;
 	display: flex;
 	flex-direction: column;
 	min-width: 85%;
+} */
+#create-quiz-body {
+	margin-top: 50px;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	/* min-width: 85%; */
 }
 .quiz-header {
 	padding: 20px;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 import AttemptedModal from './AttemptedModal'
 
@@ -22,7 +21,6 @@ const AttemptBlindQuiz = () => {
 	const [loading, setLoading] = useState(true)
 	const [result, setResult] = useState({})
 	const [showModal, setShowModal] = useState(false)
-	const uid = firebase.auth().currentUser.uid
 
 	// Using Speech Recognition Transcript
 	const { transcript, resetTranscript } = useSpeechRecognition({

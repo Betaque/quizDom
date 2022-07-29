@@ -6,8 +6,6 @@ import store from '../store/index'
 import axios from "axios"    
 import {useNavigate} from "react-router-dom"
 import './Home.css'
-// import { StyledFirebaseAuth } from 'react-firebaseui'
-// import firebase from '../firebase/firebase'
 import LoadingScreen from './LoadingScreen'
 
 const Home = ({ setUser }) => {
